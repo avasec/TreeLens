@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://treelens.dev/schema/meta-selection-op.schema.json",
+  "title": "TreeLens meta / selection operation",
+  "description": "Small flat states (wire-protocol.md §6) — replaced wholesale, no granular diff. metaRebuild carries the document header; selectionSet carries the selection state.",
+  "$defs": {
+    "metaRebuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "meta"],
+      "properties": {
+        "op": { "const": "metaRebuild" },
+        "meta": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "selectionSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "selection"],
+      "properties": {
+        "op": { "const": "selectionSet" },
+        "selection": { "type": "object", "additionalProperties": true }
+      }
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/metaRebuild" },
+    { "$ref": "#/$defs/selectionSet" }
+  ]
+}

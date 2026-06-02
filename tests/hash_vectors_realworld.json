@@ -1,0 +1,1477 @@
+[
+  {
+    "label": "small-groups-smartobjects",
+    "note": "Real Photoshop document structure captured from a production session (structure only — names/attrs live separately, so no content leaks). The sha256 was emitted by the production server's JS adapter and reproduced byte-for-byte by the Python kernel. Root sentinel type is \"DOCUMENT\" (the production adapter naming) — a deviation from the reference spec root type \"ROOT\": hash parity is unaffected (the kernel is type-agnostic), but a schema-validated adapter should normalize the root sentinel to \"ROOT\".",
+    "nodes": 14,
+    "tree": {
+      "id": null,
+      "type": "DOCUMENT",
+      "children": [
+        {
+          "id": 21,
+          "type": "GROUP",
+          "children": [
+            {
+              "id": 18,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 15,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 14,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 13,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 12,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 11,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 10,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 9,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 8,
+              "type": "SMARTOBJECT",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": "GROUP",
+          "children": [
+            {
+              "id": 4,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 3,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "type": "PIXEL",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "sha256": "878e132f918cf097d0109595ffa23acd1eae65e7fb4ad55da9d564fbe332061f"
+  },
+  {
+    "label": "shallow-mixed",
+    "note": "Real Photoshop document structure captured from a production session (structure only — names/attrs live separately, so no content leaks). The sha256 was emitted by the production server's JS adapter and reproduced byte-for-byte by the Python kernel. Root sentinel type is \"DOCUMENT\" (the production adapter naming) — a deviation from the reference spec root type \"ROOT\": hash parity is unaffected (the kernel is type-agnostic), but a schema-validated adapter should normalize the root sentinel to \"ROOT\".",
+    "nodes": 18,
+    "tree": {
+      "id": null,
+      "type": "DOCUMENT",
+      "children": [
+        {
+          "id": 21,
+          "type": "GROUP",
+          "children": [
+            {
+              "id": 108,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 105,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 106,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 107,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 18,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 15,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 14,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 13,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 12,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 11,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 10,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 9,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 8,
+              "type": "SMARTOBJECT",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": "GROUP",
+          "children": [
+            {
+              "id": 4,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 3,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "type": "PIXEL",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "sha256": "e23b455f7b451aa5246f50ac25936e776cfb24730724589b0e180b2c14f47df6"
+  },
+  {
+    "label": "deep-production-document",
+    "note": "Real Photoshop document structure captured from a production session (structure only — names/attrs live separately, so no content leaks). The sha256 was emitted by the production server's JS adapter and reproduced byte-for-byte by the Python kernel. Root sentinel type is \"DOCUMENT\" (the production adapter naming) — a deviation from the reference spec root type \"ROOT\": hash parity is unaffected (the kernel is type-agnostic), but a schema-validated adapter should normalize the root sentinel to \"ROOT\".",
+    "nodes": 242,
+    "tree": {
+      "id": null,
+      "type": "DOCUMENT",
+      "children": [
+        {
+          "id": 10747,
+          "type": "GROUP",
+          "children": [
+            {
+              "id": 95853,
+              "type": "PIXEL",
+              "children": []
+            },
+            {
+              "id": 92735,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 92733,
+              "type": "SMARTOBJECT",
+              "children": []
+            },
+            {
+              "id": 94915,
+              "type": "PIXEL",
+              "children": []
+            },
+            {
+              "id": 64039,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 94628,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94627,
+                      "type": "SMARTOBJECT",
+                      "children": []
+                    },
+                    {
+                      "id": 94626,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 94625,
+                          "type": "TEXT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94623,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 95206,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 94916,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 94622,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 94635,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 94634,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94633,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94632,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": 94629,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 94621,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94620,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94619,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94676,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 92291,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 95006,
+                  "type": "TEXT",
+                  "children": []
+                },
+                {
+                  "id": 95210,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 95212,
+                      "type": "TEXT",
+                      "children": []
+                    },
+                    {
+                      "id": 95213,
+                      "type": "TEXT",
+                      "children": []
+                    },
+                    {
+                      "id": 95209,
+                      "type": "TEXT",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 95207,
+                  "type": "TEXT",
+                  "children": []
+                },
+                {
+                  "id": 94606,
+                  "type": "TEXT",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 93136,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 93978,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 93491,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 94914,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 86015,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 94990,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 95200,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 94989,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 94988,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 94987,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 94986,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94985,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94984,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": 94982,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 94981,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94980,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": 94978,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 94977,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94976,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94975,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94972,
+                      "type": "PIXEL",
+                      "children": []
+                    },
+                    {
+                      "id": 92973,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 95208,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 95193,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92971,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92970,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92969,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 95199,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92968,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94971,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 94970,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 92952,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 92951,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    },
+                    {
+                      "id": 92950,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 92949,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92948,
+                          "type": "GRADIENTFILL",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 92946,
+                      "type": "GRADIENTMAP",
+                      "children": []
+                    },
+                    {
+                      "id": 92945,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92944,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92943,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92942,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92941,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": 94917,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 76335,
+                  "type": "GRADIENTFILL",
+                  "children": []
+                },
+                {
+                  "id": 68269,
+                  "type": "GRADIENTFILL",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 94966,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 94965,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 92785,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 94967,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 92780,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 92778,
+                  "type": "GRADIENTFILL",
+                  "children": []
+                },
+                {
+                  "id": 92979,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 92978,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 92986,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92985,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92984,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92983,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94652,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 94651,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 94650,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 94649,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 92980,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92977,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92976,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92975,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 94679,
+                  "type": "PIXEL",
+                  "children": []
+                },
+                {
+                  "id": 95214,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 94968,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 95198,
+                  "type": "HUESATURATION",
+                  "children": []
+                },
+                {
+                  "id": 95202,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 95201,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 94637,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 94636,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 92767,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 94674,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 78227,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 92586,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 93495,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 93572,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 93565,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 93564,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 93563,
+                                  "type": "TEXT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 93562,
+                                  "type": "TEXT",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": 93560,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 93559,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 93558,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 93557,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 93556,
+                                  "type": "GROUP",
+                                  "children": [
+                                    {
+                                      "id": 93555,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": 93554,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": 93553,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": 95099,
+                          "type": "TEXT",
+                          "children": []
+                        },
+                        {
+                          "id": 94881,
+                          "type": "TEXT",
+                          "children": []
+                        },
+                        {
+                          "id": 95205,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 95204,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 94667,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 93574,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 93542,
+                          "type": "TEXT",
+                          "children": []
+                        },
+                        {
+                          "id": 94656,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 95215,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 95220,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 94614,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 92701,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 93571,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 93570,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 93569,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 93568,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 93567,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 93138,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92383,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92382,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92381,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92380,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": 92700,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92699,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92698,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 92697,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 92696,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92695,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": 92693,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94963,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 94962,
+                              "type": "GRADIENTFILL",
+                              "children": []
+                            },
+                            {
+                              "id": 92691,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 92706,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92689,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": 92683,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 92682,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 94678,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 92681,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 92680,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 92679,
+                          "type": "GRADIENTMAP",
+                          "children": []
+                        },
+                        {
+                          "id": 92678,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 92677,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": 94993,
+                      "type": "SMARTOBJECT",
+                      "children": []
+                    },
+                    {
+                      "id": 92674,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 92673,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 92672,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 92671,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92670,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": 92668,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 92667,
+                                  "type": "TEXT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92666,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": 92664,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 92663,
+                                  "type": "TEXT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92662,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92661,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92660,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92659,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92658,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 92657,
+                                  "type": "GROUP",
+                                  "children": [
+                                    {
+                                      "id": 92656,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": 92613,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 92612,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 92611,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            },
+                            {
+                              "id": 92610,
+                              "type": "SMARTOBJECT",
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": 93963,
+                          "type": "GROUP",
+                          "children": [
+                            {
+                              "id": 93972,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 93971,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 93970,
+                                  "type": "SMARTOBJECT",
+                                  "children": []
+                                }
+                              ]
+                            },
+                            {
+                              "id": 94912,
+                              "type": "GROUP",
+                              "children": [
+                                {
+                                  "id": 94911,
+                                  "type": "TEXT",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94910,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94909,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94908,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94907,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94906,
+                                  "type": "GRADIENTMAP",
+                                  "children": []
+                                },
+                                {
+                                  "id": 94905,
+                                  "type": "GROUP",
+                                  "children": [
+                                    {
+                                      "id": 94904,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    },
+                                    {
+                                      "id": 94903,
+                                      "type": "SMARTOBJECT",
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": 93962,
+                              "type": "SOLIDCOLOR",
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": 93539,
+                      "type": "GROUP",
+                      "children": [
+                        {
+                          "id": 93546,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 93545,
+                          "type": "GRADIENTFILL",
+                          "children": []
+                        },
+                        {
+                          "id": 92705,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92704,
+                          "type": "SMARTOBJECT",
+                          "children": []
+                        },
+                        {
+                          "id": 92703,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        },
+                        {
+                          "id": 92702,
+                          "type": "SOLIDCOLOR",
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 94663,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94665,
+                      "type": "PIXEL",
+                      "children": []
+                    },
+                    {
+                      "id": 93959,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    },
+                    {
+                      "id": 94662,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": 95005,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 95004,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 95196,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 94615,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94613,
+                      "type": "GRADIENTFILL",
+                      "children": []
+                    },
+                    {
+                      "id": 94616,
+                      "type": "GRADIENTFILL",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 95003,
+                  "type": "GRADIENTFILL",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 94957,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 94956,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94955,
+                      "type": "SMARTOBJECT",
+                      "children": []
+                    },
+                    {
+                      "id": 94954,
+                      "type": "GRADIENTFILL",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 94952,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 94951,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 94950,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94949,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    },
+                    {
+                      "id": 94948,
+                      "type": "SMARTOBJECT",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 94946,
+                  "type": "GROUP",
+                  "children": [
+                    {
+                      "id": 94945,
+                      "type": "SOLIDCOLOR",
+                      "children": []
+                    },
+                    {
+                      "id": 94944,
+                      "type": "SMARTOBJECT",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 94959,
+                  "type": "HUESATURATION",
+                  "children": []
+                },
+                {
+                  "id": 94958,
+                  "type": "GRADIENTMAP",
+                  "children": []
+                },
+                {
+                  "id": 94942,
+                  "type": "GRADIENTMAP",
+                  "children": []
+                },
+                {
+                  "id": 94941,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 94920,
+              "type": "GROUP",
+              "children": [
+                {
+                  "id": 95535,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 95326,
+                  "type": "SMARTOBJECT",
+                  "children": []
+                },
+                {
+                  "id": 95538,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 95537,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                },
+                {
+                  "id": 95195,
+                  "type": "GRADIENTMAP",
+                  "children": []
+                },
+                {
+                  "id": 95536,
+                  "type": "SOLIDCOLOR",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "sha256": "6d1a8d2b084a7ce0bb5c37eeceb4790659c2585dc2da36eb48250f315a6d09d3"
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://treelens.dev/schema/node.schema.json",
+  "title": "TreeLens tree node",
+  "description": "A pure-structure hierarchy node (wire-protocol.md §3). Name/visible/opacity/bounds/effects live in attrs, NOT here. The root is a sentinel: id=null, type=\"ROOT\".",
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "children"],
+      "properties": {
+        "id": {
+          "description": "Stable node id, unique within the scope. MUST survive undo/redo. Matching is strictly by id (no positional fallback).",
+          "type": ["integer", "string"]
+        },
+        "type": {
+          "description": "Host-defined node kind (e.g. GROUP, PIXEL, TEXT). A container/group is a normal node with non-empty children.",
+          "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        }
+      }
+    },
+    "rootSentinel": {
+      "description": "The tree root. id MUST be null and type MUST be \"ROOT\" — a fixed protocol marker, NOT a host name: the adapter normalizes its host root (e.g. Photoshop's \"DOCUMENT\") to \"ROOT\". The kernel is type-agnostic, but the hash includes type, so the marker is fixed for cross-language hash determinism (wire-protocol.md §3). Top-level nodes are its children; the sentinel itself is never surfaced to the model.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "children"],
+      "properties": {
+        "id": { "type": "null" },
+        "type": { "const": "ROOT" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        }
+      }
+    }
+  },
+  "$ref": "#/$defs/rootSentinel"
+}

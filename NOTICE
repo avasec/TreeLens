@@ -1,0 +1,28 @@
+TreeLens
+========
+
+TreeLens generalizes the engineering core of a production Photoshop MCP server
+(a server-side, diff-synced mirror of a host application's hierarchical state,
+navigated by query tools) into a reusable, host-agnostic pattern for building
+MCP servers over applications with large live hierarchies (Photoshop, Figma,
+Unity, ...).
+
+Origin / attribution
+---------------------
+The production system TreeLens was extracted from is itself a fork of:
+
+    adb-mcp — https://github.com/mikechambers/adb-mcp
+    Copyright (c) 2025 Mike Chambers
+    Licensed under the MIT License.
+
+The original adb-mcp MIT license terms are preserved in LICENSE. TreeLens is an
+independent generalization (its own path), not affiliated with or endorsed by
+the original author.
+
+Status
+------
+Published under MIT. The pattern's mirror core is proven in production
+(Photoshop); this reference is an independent extraction of it, validated by the
+conformance suite (not the production binary). Several mechanisms (mutation
+batching, safe-wait / command serialization, diff localization) are still in
+design — see docs/open-problems.md.

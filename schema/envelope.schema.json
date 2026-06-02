@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://treelens.dev/schema/envelope.schema.json",
+  "title": "TreeLens response envelope",
+  "description": "The adapter->kernel contract (wire-protocol.md §1): one JSON object per command. Channels are independent and any may be absent. On FAILURE the kernel leaves the mirror untouched and channels are ignored. The kernel ANNOTATES the response (stateVersion, driftRecovered, resyncedExternalEdit) and STRIPS heavy payload before returning to the model — those annotation fields are allowed here so model-facing envelopes also validate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status"],
+  "properties": {
+    "status": { "enum": ["SUCCESS", "FAILURE"] },
+    "response": {
+      "description": "Any serializable handler payload, or null."
+    },
+    "scopeId": {
+      "description": "Document/scene/file id. MUST be present on any mutation that changes the mirror.",
+      "type": ["integer", "string"]
+    },
+    "treeChanges": {
+      "type": "array",
+      "items": { "$ref": "tree-op.schema.json" }
+    },
+    "treeHash": {
+      "description": "sha256 hex over the canonical serialization of the post-state tree (wire-protocol.md §7). MUST be present with treeChanges. With treeAfter (full-state fallback) the kernel computes it from canonical_hash — the adapter MAY omit it (wire-protocol.md §2).",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "treeAfter": {
+      "description": "Full post-state (root sentinel) shipped INSTEAD of treeChanges when the adapter sets returns_full_state=true; the kernel diffs it and strips it (wire-protocol.md §2).",
+      "$ref": "node.schema.json#/$defs/rootSentinel"
+    },
+    "attrChanges": {
+      "type": "array",
+      "items": { "$ref": "attr-op.schema.json" }
+    },
+    "metaChanges": {
+      "type": "array",
+      "items": { "$ref": "meta-selection-op.schema.json#/$defs/metaRebuild" }
+    },
+    "selectionChanges": {
+      "type": "array",
+      "items": { "$ref": "meta-selection-op.schema.json#/$defs/selectionSet" }
+    },
+    "message": {
+      "description": "Error text. MUST be present if status=FAILURE.",
+      "type": "string"
+    },
+    "stateVersion": {
+      "description": "Kernel-annotated: opaque monotonic per-scope correlation token (NOT a change counter).",
+      "type": "integer"
+    },
+    "driftRecovered": {
+      "description": "Kernel-annotated: set when a hash mismatch OR a failed incremental apply forced a wholesale rebuild from the host.",
+      "type": "boolean"
+    },
+    "resyncedExternalEdit": {
+      "description": "Kernel-annotated: set when a push-listener external edit forced a rebuild.",
+      "type": "boolean"
+    }
+  },
+  "dependentRequired": {
+    "treeChanges": ["treeHash"]
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "FAILURE" } } },
+      "then": { "required": ["message"] }
+    },
+    {
+      "if": {
+        "anyOf": [
+          { "required": ["treeChanges"] },
+          { "required": ["treeAfter"] },
+          { "required": ["attrChanges"] },
+          { "required": ["metaChanges"] },
+          { "required": ["selectionChanges"] }
+        ]
+      },
+      "then": { "required": ["scopeId"] }
+    }
+  ]
+}

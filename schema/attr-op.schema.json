@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://treelens.dev/schema/attr-op.schema.json",
+  "title": "TreeLens attribute operation",
+  "description": "One attr-channel op (wire-protocol.md §5). Arrives in three forms: scoped delta (attr-mutation, no treeChanges), structural-seed (alongside treeChanges, attrs of new nodes), and attrsRebuild (on rebuild events). Note: attrs are NOT cross-hashed — they resync wholesale on rebuild and scoped deltas are trusted.",
+  "$defs": {
+    "id": { "type": ["integer", "string"] }
+  },
+  "oneOf": [
+    {
+      "title": "attrSet",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id", "key", "value"],
+      "properties": {
+        "op": { "const": "attrSet" },
+        "id": { "$ref": "#/$defs/id" },
+        "key": { "type": "string" },
+        "value": {}
+      }
+    },
+    {
+      "title": "attrDelete",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id", "key"],
+      "properties": {
+        "op": { "const": "attrDelete" },
+        "id": { "$ref": "#/$defs/id" },
+        "key": { "type": "string" }
+      }
+    },
+    {
+      "title": "attrsRebuild",
+      "description": "Full replacement of the attr store. Keys are node ids (as strings in JSON objects).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "attributes"],
+      "properties": {
+        "op": { "const": "attrsRebuild" },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  ]
+}

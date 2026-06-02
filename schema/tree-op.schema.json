@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://treelens.dev/schema/tree-op.schema.json",
+  "title": "TreeLens tree operation",
+  "description": "One structural-channel op (wire-protocol.md §4). Computed by the adapter (compute_tree_diff), applied by the kernel (Mirror.apply_tree_diff). This is the COMPLETE vocabulary — there is no addGroup op; a group is an `add` with type=\"GROUP\" and non-empty children.",
+  "$defs": {
+    "id": { "type": ["integer", "string"] },
+    "idOrNull": { "type": ["integer", "string", "null"] }
+  },
+  "oneOf": [
+    {
+      "title": "add",
+      "description": "Add the TOP node of a subtree; its children carry the whole new structure (descendants are not duplicated as separate adds).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id", "type", "parentId", "index", "children"],
+      "properties": {
+        "op": { "const": "add" },
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "type": "string" },
+        "parentId": { "$ref": "#/$defs/idOrNull" },
+        "index": { "type": "integer", "minimum": 0 },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "node.schema.json#/$defs/node" }
+        }
+      }
+    },
+    {
+      "title": "remove",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id"],
+      "properties": {
+        "op": { "const": "remove" },
+        "id": { "$ref": "#/$defs/id" }
+      }
+    },
+    {
+      "title": "move",
+      "description": "Move a node by reference. toParent=null means top level.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id", "toParent", "newIndex"],
+      "properties": {
+        "op": { "const": "move" },
+        "id": { "$ref": "#/$defs/id" },
+        "toParent": { "$ref": "#/$defs/idOrNull" },
+        "newIndex": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "title": "typeChange",
+      "description": "`from` MUST equal the node's current type in the mirror, else it is drift (kernel raises -> external rebuild).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "id", "from", "to"],
+      "properties": {
+        "op": { "const": "typeChange" },
+        "id": { "$ref": "#/$defs/id" },
+        "from": { "type": "string" },
+        "to": { "type": "string" }
+      }
+    },
+    {
+      "title": "rebuild",
+      "description": "Degenerate op: full replacement. MUST be the only op in the array; `tree` is absorbed and stripped from the model-facing response.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "tree"],
+      "properties": {
+        "op": { "const": "rebuild" },
+        "tree": { "$ref": "node.schema.json#/$defs/rootSentinel" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "tree": { "id": null, "type": "ROOT", "children": [] },
+    "sha256": "f71fb1d14c74d3a2e52d46d7faf2ab0fd2282ac56cc3fb8d5236ced33972d28d"
+  },
+  {
+    "tree": {
+      "id": null,
+      "type": "ROOT",
+      "children": [{ "id": 1, "type": "PIXEL", "children": [] }]
+    },
+    "sha256": "0f286990c6b859b21c4977ed73baf0df6ab9abbc5a3d09d899e6add84b11f053"
+  },
+  {
+    "tree": {
+      "id": null,
+      "type": "ROOT",
+      "children": [
+        {
+          "id": 1,
+          "type": "GROUP",
+          "children": [{ "id": 2, "type": "TEXT", "children": [] }]
+        },
+        { "id": 10, "type": "PIXEL", "children": [] }
+      ]
+    },
+    "sha256": "9ab7d01b1a07b2186dfc6e7029b50bd85a5f2be0e7bcc5e9e3ee3c42bebe8a9b"
+  }
+]

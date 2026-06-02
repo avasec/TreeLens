@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# Repo workflow is pip (README/CONTRIBUTING/CI). uv.lock is a local-runner
+# artifact (uv run); not a supported path — don't commit it.
+uv.lock
