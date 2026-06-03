@@ -133,9 +133,11 @@ still in design — and that is **part of the value**: the list of what remains
 ([docs/open-problems.md](docs/open-problems.md)) is a ready roadmap for contributors. What exactly is proven
 vs unfinished — the maturity table in [docs/pattern.md](docs/pattern.md) § "Component maturity".
 
-The code's origin is a fork of [mikechambers/adb-mcp](https://github.com/mikechambers/adb-mcp) (MIT);
-TreeLens is a generalization of its engineering kernel, going its own way.
+The idea took shape while the author was working on a fork of
+[mikechambers/adb-mcp](https://github.com/mikechambers/adb-mcp) (MIT). TreeLens shares **no code** with
+adb-mcp — the pattern was distilled independently from the author's own work on top of that fork — but
+credit goes to that project as where the idea began.
 
 ## License
 
-MIT — see [LICENSE](LICENSE) and [NOTICE](NOTICE) (adb-mcp attribution).
+MIT — see [LICENSE](LICENSE) and [NOTICE](NOTICE) (adb-mcp acknowledgment).

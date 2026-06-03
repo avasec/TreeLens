@@ -7,17 +7,17 @@ navigated by query tools) into a reusable, host-agnostic pattern for building
 MCP servers over applications with large live hierarchies (Photoshop, Figma,
 Unity, ...).
 
-Origin / attribution
----------------------
-The production system TreeLens was extracted from is itself a fork of:
+Acknowledgment
+--------------
+TreeLens grew out of the author's work on a fork of:
 
     adb-mcp — https://github.com/mikechambers/adb-mcp
-    Copyright (c) 2025 Mike Chambers
-    Licensed under the MIT License.
+    (Copyright (c) 2025 Mike Chambers, MIT)
 
-The original adb-mcp MIT license terms are preserved in LICENSE. TreeLens is an
-independent generalization (its own path), not affiliated with or endorsed by
-the original author.
+The pattern was distilled independently from the author's own code written on top
+of that fork. TreeLens shares NO source code with adb-mcp; this note is a credit
+to the project where the idea took shape, not a statement of code derivation.
+TreeLens is not affiliated with or endorsed by the original author.
 
 Status
 ------

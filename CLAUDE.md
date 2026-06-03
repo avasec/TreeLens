@@ -93,8 +93,9 @@ These are the load-bearing rules (full text in `CONTRIBUTING.md` § "Architectur
 
 - **English only.** All prose, code comments, commit messages, PRs, and issues are in English.
   (Talking with the user here may be in Russian, but anything written into the repo is English.)
-- **License headers / attribution.** MIT; the kernel descends from a fork of `adb-mcp` — keep
-  `NOTICE` and existing headers intact.
+- **License / acknowledgment.** MIT. TreeLens shares no code with `adb-mcp`; `NOTICE` credits it only
+  as where the idea took shape, not as a code source — keep that framing accurate, don't reintroduce
+  "derived from" / "fork of" / "license preserved" wording.
 - Python ≥ 3.10. Match the surrounding code's style (terse, comment-dense at decision points).
 - Before committing, re-read what you're about to change against the invariants above; a green
   test run is necessary but not sufficient.
