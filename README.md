@@ -74,11 +74,14 @@ node js/check_vectors.js            # cross-language hash parity (a second imple
 
 The kernel also runs **without installation**: `python tests/test_conformance.py` and `python demo.py` put
 the root on `sys.path` themselves. `tests/test_schema.py` requires `jsonschema` (dev-extra); without it the
-suite is **cleanly skipped** (exit 0) — the kernel's zero-dep invariant.
+suite is **cleanly skipped** (exit 0) — the kernel's zero-dep invariant — and the run prints a loud banner
+flagging that the contract was not validated (`tests/conftest.py`).
 
 > **A validating run = `pip install -e ".[dev]"`.** Without dev-extra a bare `pytest tests/` will show
-> green, but the schema suite is **silently skipped** (the schema contract is not checked). CI always
-> installs dev-extra. If you see `N passed, M skipped` — the schema was not validated.
+> green, but the schema suite is **skipped — the schema contract is not checked**. The skip is **not
+> silent**: pytest prints a loud banner at the end of the run flagging this. If you see `N passed, M
+> skipped`, the schema was not validated. CI always installs dev-extra, so on every push and pull request
+> the schema suite runs automatically as a hard gate.
 
 `demo.py` shows the whole pattern without a real application:
 1. **bootstrap + structural mutations** — diff-as-response, thin envelopes (`treeChanges` + `treeHash`);

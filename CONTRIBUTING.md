@@ -47,9 +47,11 @@ The kernel (`treelens/`) can also be run **without installation** — `python te
 and `python demo.py` put the root on `sys.path` themselves.
 
 > **The validating run is `pip install -e ".[dev]"`.** Without the dev-extra, `tests/test_schema.py`
-> is **silently skipped** (no `jsonschema`): `pytest` is green, but the schema contract is **not
-> checked**. If you see `N passed, M skipped` — you did not validate the schema. CI always installs
-> the dev-extra.
+> is **skipped** (no `jsonschema`): `pytest` is green, but the schema contract is **not checked**. The
+> skip is **not silent** — pytest prints a loud banner at the end of the run flagging it
+> (`tests/conftest.py`). If you see `N passed, M skipped` — you did not validate the schema. CI always
+> installs the dev-extra, so on every push and pull request the schema suite runs automatically as a
+> hard gate.
 
 ## Test tiers (and what about live)
 
