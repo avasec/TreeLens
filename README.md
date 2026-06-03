@@ -35,6 +35,41 @@ MCP gives an agent the transport and primitives to call an app — but it does *
 versioned hierarchical state, or node-id reconciliation. Those stay application-level. TreeLens is exactly
 that layer: it isn't displaced by the protocol, it closes the gap MCP leaves.
 
+## See it run
+
+**30 seconds, no install, no Photoshop.** The whole pattern runs against a toy in-memory host — the kernel
+is zero-dependency and self-bootstraps `sys.path`, so a clone is enough:
+
+```bash
+python demo.py
+```
+
+Abridged real output — the pattern proving itself end-to-end:
+
+```text
+1) structural add — diff-as-response (a thin envelope, not the full tree)
+   add 'Sky' -> {'treeChanges': [{'op': 'add', 'id': 2, 'type': 'PIXEL', 'parentId': 1, ...}],
+                 'stateVersion': 5, 'response': {'createdId': 2}}
+
+2) attr-mutation (rename) — a thin envelope with NO treeChanges (a pure attr edit)
+   rename 'Sky' -> {'stateVersion': 8, 'response': None}
+
+3) navigate the mirror — no host round-trip
+   query('Sky') -> {'matches': [{'id': 2, 'name': 'Sky Gradient', ...}], 'matchCount': 1}
+
+4) drift via the integrity hash — a SILENT external edit, caught on the next command
+   add 'Title' -> {'treeChanges': [...], 'stateVersion': 12, 'driftRecovered': True, ...}
+
+5) drift via the push-listener — a NOTIFIED external edit, resynced
+   rename     -> {'stateVersion': 14, 'resyncedExternalEdit': True, 'response': None}
+```
+
+Diff-as-response, navigation over the mirror, and **both** drift-recovery paths — exercised without a host.
+(Per-stage walkthrough + install/test commands are under [Running](#running).)
+
+> **Two doors:** **run it** → `python demo.py` (above); **understand it** →
+> **[docs/pattern.md](docs/pattern.md)**, the reference design and vocabulary.
+
 ## Who it's for
 
 - You are building an MCP over a **design/3D/CAD/scene-graph application** with hundreds of nodes and long
