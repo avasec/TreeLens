@@ -1,7 +1,56 @@
+# --- Python ---
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
 .venv/
+venv/
+env/
+
 # Repo workflow is pip (README/CONTRIBUTING/CI). uv.lock is a local-runner
 # artifact (uv run); not a supported path — don't commit it.
 uv.lock
+
+# --- Node (only js/ tooling; no package is committed) ---
+node_modules/
+npm-debug.log*
+
+# --- Secrets / local-only (this is a PUBLIC repo — keep these out) ---
+.env
+.env.*
+*.local
+secrets.*
+*.pem
+*.key
+credentials.json
+
+# --- Claude Code: commit shared config, ignore local/personal ---
+# Tracked & shared: .claude/settings.json, .claude/agents/, CLAUDE.md
+# Ignored: anything local, personal, or machine-specific.
+.claude/settings.local.json
+.claude/*.local.json
+.claude/.credentials.json
+CLAUDE.local.md
+
+# --- Editors / IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- OS cruft ---
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
