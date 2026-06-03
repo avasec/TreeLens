@@ -1,8 +1,18 @@
 # TreeLens
 
+[![CI](https://github.com/avasec/TreeLens/actions/workflows/ci.yml/badge.svg)](https://github.com/avasec/TreeLens/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](pyproject.toml)
+
 **A server-side mirror of a live hierarchy for an LLM agent — a pattern for building an MCP over
 applications with a large mutable tree** (Photoshop, Figma, Unity, …), plus a minimal portable code
 skeleton that runs **without a single real application**.
+
+> **Honest scope:** the pattern is **proven on Photoshop** (a production MCP server). **Figma** is
+> **in progress**; **Unity** is **planned** — no shipping adapter for either yet. Their feasibility and
+> channel mappings are worked out in [docs/portability.md](docs/portability.md) (Figma:
+> *needs-adaptation*; Unity: *needs-adaptation → hard*). The host list above is the **problem domain**,
+> not a claim of three shipping adapters.
 
 ## The problem in one sentence
 
@@ -26,8 +36,6 @@ with deltas instead of re-snapshotting the whole thing.**
   with no round-trip to the host.
 - **Integrity + drift.** The tree hash is cross-checked host↔server; manual user edits are caught by the
   push-listener; desync → force rebuild.
-
-Full reference design and vocabulary — **[docs/pattern.md](docs/pattern.md)**.
 
 ## Why a separate layer over MCP?
 
