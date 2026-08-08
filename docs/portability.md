@@ -43,6 +43,38 @@ or impossible; **optional** — degrades gracefully.
 **(C)** a per-mutation diff (or a fallback to full state), back it with **(D)** a root hash; everything
 else (attrs, events, scope) is graceful-degradation territory.*
 
+## Adopting the kernel: conform or reimplement
+
+Taking the kernel is not "zero changes". The repo hands you working code, but that code reads the
+envelope by its **normative names** — adopting it imposes the wire protocol on your host side. An
+adopter chooses one of two honest paths:
+
+- **(a) Reimplement by analogy.** Write your own kernel following this repo as the reference shape,
+  naming fields and ops to fit your existing plugin. Full freedom; the normative docs here are just a
+  blueprint. More work — but if your host already has an entrenched protocol, this is more honest than
+  breaking it.
+- **(b) Vendor the ready kernel** (subtree/dependency). Cheap in code — but **your host emit must
+  conform** to the normative contract. That is integration work, not a drop-in.
+
+What path (b) actually imposes — every row below is a real collision from the first adopter
+(avasec/ps-mcp — the origin system the kernel was extracted from; even its "native" envelope
+collided in three places):
+
+| Surface | Normative requirement | What non-conformance looks like |
+|---|---|---|
+| scope key | `scopeId` (not a host-specific name like `documentId`) | `scope=None` → **every channel skipped silently**; the mirror just stops updating |
+| tree-op dictionary | `add` / `remove` / `move` / `typeChange` / `rebuild` — **no `addGroup`** (a group is `add` + `type` + `children`) | unknown op → forced rebuild on every group insert instead of an increment |
+| root sentinel | fixed `{"id": null, "type": "ROOT"}` **in the host's emit** | normalizing on the receiving side breaks the hash gate: the host hashes *its* tree, the kernel compares `mirror.hash` against that `treeHash` → mismatch on every structural command → rebuild per mutation |
+| canonical serialization | byte-for-byte `stable_serialize` (sorted keys, no whitespace, `ensure_ascii=False`) | drift-check false-fires on every command |
+| return envelope | kernel stamps `stateVersion`, `resyncedExternalEdit`, `driftRecovered` | consumer either adopts these names or remaps **at one point** where kernel output becomes its output |
+| recovery scope | built-in recovery reseeds **tree+attrs only** (`read_tree`/`read_attrs` in the ABC) | a host mirroring more channels (meta/selection) carries host-specific reads beyond the ABC and finishes recovery in a lens subclass |
+
+**The thesis in one line:** the seam is neutral to the *consumer-facing* surface (the adopter kept its
+public `snapshot_*` tool names over the kernel with a one-point rename), but **not** neutral to the
+*host emit* — the plugin must speak the normative protocol. Conforming the emitter beats translating on
+receive: a translator is a permanent double vocabulary and a drift point, justified only for a black-box
+host you do not own.
+
 ## Kernel (host-agnostic) vs adapter (host-specific)
 
 ### Kernel — reusable library (written once)
