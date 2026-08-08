@@ -1,15 +1,16 @@
 ---
 type: reference
 subtype: stack
-updated: 2026-06-02
+updated: 2026-08-08
 ---
 
 # TreeLens — an adapter for Photoshop (UXP): a practical guide
 
 The TreeLens kernel (`treelens/`) is host-agnostic. To stand up a mirror over Photoshop, you implement
 **`HostAdapter`** (`treelens/adapter.py`) against the UXP API. This guide is a distillation of how the
-**production Photoshop MCP server** — from which the pattern was extracted — does it: what is thin on the
-PS side and where the pitfalls are. The normative seam contract — [wire-protocol](../wire-protocol.md);
+**production Photoshop MCP server** — from which the pattern was extracted, and which now **runs on the
+vendored kernel itself** (a shipped `HostAdapter` + a lens subclass, battle-tested against live
+Photoshop) — does it: what is thin on the PS side and where the pitfalls are. The normative seam contract — [wire-protocol](../wire-protocol.md);
 the portability axes — [portability](../docs/portability.md).
 
 > **Why this guide exists.** There is no public reference PS adapter in the repo (this is an honest
@@ -30,6 +31,21 @@ goes back the same way.
 ```
 kernel (Python) ──ws──▶ relay (Node) ──ws──▶ UXP plugin ──Photoshop API──▶ Photoshop
 ```
+
+**Field note — adapter reads must not raise.** The transport signals a plugin error or a dead relay by
+raising; the adapter's send boundary translates both into the `FAILURE` envelope the kernel expects.
+Recovery runs deep inside `ingest`: an exception escaping there surfaces as the failure of whatever tool
+the model happened to call — taking that tool's own, already successful, result down with it. A recovery
+round-trip follows a command that just succeeded over the same transport, so a failure there is transient
+by nature: flag the mirror stale (`driftRecoveryFailed`) and let the next command retry.
+
+**Field note — verify the scope on every read.** Photoshop can only read the **active** document, so a
+read for scope X may come back describing scope Y. Compare the scope the host names in its answer with
+the one you asked for; on mismatch — refuse (and report which scope the host actually named), never store
+the foreign state under the requested scope. And **never cache the refusal**: "the active document
+changed" produces no event the server can hear (see §5), so a cached refusal is forever — the shipped
+adapter probes the host once per miss instead, and every answer refreshes its notion of the active
+document.
 
 ## 1. `read_tree(scope_id)` → the pure structure `{id, type, children}`
 
@@ -99,6 +115,12 @@ corresponding tier (S4 progressive disclosure).
 attrs are **not cross-hashed** (see §2) — scoped deltas are trusted on their word, a full attrs resync is
 done on rebuild. Don't try to fold attrs under the common tree hash.
 
+**Field note — recovery covers tree+attrs only.** The kernel's built-in recovery reseeds what the ABC
+knows: `read_tree` / `read_attrs`. A host that mirrors more channels (the shipped adapter also mirrors
+document meta and the selection) carries host-specific reads beyond the ABC and finishes recovery in a
+lens subclass — otherwise a drift recovery leaves those channels serving a stale header at a fresh
+version. (Blessing these extension seams is an open question — issues #3/#4.)
+
 ## 4. `transaction(fn)` → `executeAsModal`
 
 All Photoshop mutations go inside a modal scope: wrap `fn` in `executeAsModal` (the helper wrapper
@@ -119,7 +141,14 @@ will replace its incremental diff with a full rebuild of the current state.
 **The key insight this rests on:** Photoshop **does not send notifications for the plugin's own ops**
 (inside `executeAsModal`). So any *received* event = a **user** edit, not an echo of your own command. That
 is why the listener catches exactly external edits. (select/navigation is excluded from the event set —
-these are not mirror mutations.)
+these are not mirror mutations. Note the blind spot this leaves: **switching the active document is
+invisible to the server** — there is no event for it in this set, which is exactly why refusals must
+not be cached, see §0.)
+
+**Field note — the kernel's dirty-scope path may stay dormant.** In the shipped adapter the `userDirty`
+flag is resolved **plugin-side**: the next command arrives already carrying a full rebuild envelope, so
+the kernel's own `resyncedExternalEdit` path never fires. The `on_external_change` callback seam is still
+worth wiring — a host with a synchronous push (Figma's `documentchange`) would drive it directly.
 
 ## 6. Diff: compute it yourself or hand it to the kernel
 
