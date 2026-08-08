@@ -147,6 +147,67 @@ def test_attr_diff_and_query():
     assert capped["truncated"] is True and len(capped["matches"]) == 1
 
 
+def test_attr_delete_removes_the_field_and_tolerates_misses():
+    """The apply side of `attrDelete` — the op a host emits when a field stops
+    existing (an effect cleared, a mask removed).
+
+    Deleting must actually delete: a no-op implementation leaves the mirror
+    claiming a property the host no longer has, and nothing downstream can tell,
+    because attrs are not covered by the integrity hash. The two miss cases are
+    part of the contract too — a delta may reference a node or key the mirror
+    never had, and that must not abort the batch.
+    """
+    m = Mirror()
+    m.rebuild(SCOPE, _root([_node(1, "PIXEL")]))
+    m.rebuild_attrs(SCOPE, {1: {"name": "Sky", "visible": True}})
+
+    m.apply_attr_diff(SCOPE, [{"op": "attrDelete", "id": 1, "key": "visible"}])
+    assert m.get_attrs(SCOPE, 1) == {"name": "Sky"}, m.get_attrs(SCOPE, 1)
+
+    # missing key: no-op, and the rest of the node survives untouched
+    m.apply_attr_diff(SCOPE, [{"op": "attrDelete", "id": 1, "key": "visible"}])
+    assert m.get_attrs(SCOPE, 1) == {"name": "Sky"}
+
+    # missing node: no-op, and no phantom entry is created for it
+    m.apply_attr_diff(SCOPE, [{"op": "attrDelete", "id": 999, "key": "name"}])
+    assert m.get_attrs(SCOPE, 999) is None
+    assert m.get_attrs(SCOPE, 1) == {"name": "Sky"}
+
+    # a delete riding alongside a set in one batch applies both
+    m.apply_attr_diff(SCOPE, [
+        {"op": "attrSet", "id": 1, "key": "opacity", "value": 50},
+        {"op": "attrDelete", "id": 1, "key": "name"},
+    ])
+    assert m.get_attrs(SCOPE, 1) == {"opacity": 50}
+
+
+def test_unknown_meta_or_selection_op_is_rejected():
+    """Every channel fails loudly on an op it does not know.
+
+    The tree and attr dispatchers already raise; meta and selection used to skip
+    silently, which is worse than a crash: those two channels are NOT covered by
+    the integrity hash, so a typo'd op name would leave the mirror serving a
+    stale document header (or marquee) with a version counter that says fresh.
+    """
+    lens = TreeLens(_FullStateHost())
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "metaChanges": [{"op": "metaRebuild", "meta": {"width": 10}}]})
+
+    for channel, op, label in (
+        ("metaChanges", {"op": "metaSet", "meta": {"width": 20}}, "unknown meta op"),
+        ("selectionChanges", {"op": "selectionToggle"}, "unknown selection op"),
+    ):
+        try:
+            lens.ingest({"status": "SUCCESS", "scopeId": SCOPE, channel: [op]})
+        except ValueError as exc:
+            assert label in str(exc), f"wrong error for {channel}: {exc}"
+        else:
+            raise AssertionError(f"{channel} silently accepted {op['op']!r}")
+
+    assert lens.mirror.get_meta(SCOPE) == {"width": 10}, "rejected op must not apply"
+    assert lens.mirror.get_selection(SCOPE) is None
+
+
 class _FullStateHost(HostAdapter):
     """Adapter that ships full post-state via `treeAfter` (returns_full_state)."""
 

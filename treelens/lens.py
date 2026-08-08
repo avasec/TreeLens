@@ -116,8 +116,14 @@ class TreeLens:
         meta_changes = env.get("metaChanges")
         if scope is not None and meta_changes is not None:
             for op in meta_changes:
-                if op.get("op") == "metaRebuild":
-                    self.mirror.set_meta(scope, op["meta"])
+                # Unknown ops raise, symmetrically with the tree and attr
+                # dispatchers (Mirror._apply_tree_op / _apply_attr_op): silently
+                # skipping one leaves the mirror quietly stale — a state the
+                # integrity hash cannot catch, because meta and selection are not
+                # hashed.
+                if op.get("op") != "metaRebuild":
+                    raise ValueError(f"ingest: unknown meta op {op.get('op')!r}")
+                self.mirror.set_meta(scope, op["meta"])
             env["stateVersion"] = self.mirror.version(scope)
             env.pop("metaChanges", None)
 
@@ -125,8 +131,11 @@ class TreeLens:
         selection_changes = env.get("selectionChanges")
         if scope is not None and selection_changes is not None:
             for op in selection_changes:
-                if op.get("op") == "selectionSet":
-                    self.mirror.set_selection(scope, op["selection"])
+                if op.get("op") != "selectionSet":
+                    raise ValueError(
+                        f"ingest: unknown selection op {op.get('op')!r}"
+                    )
+                self.mirror.set_selection(scope, op["selection"])
             env["stateVersion"] = self.mirror.version(scope)
             env.pop("selectionChanges", None)
 
