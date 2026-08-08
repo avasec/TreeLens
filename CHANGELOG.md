@@ -15,6 +15,10 @@ server, validated by the conformance suite) + an adapter contract + a reference 
   recovery), `HostAdapter` (ABC — the seam with the host). Zero runtime dependencies.
 - **Normative wire protocol** (`wire-protocol.md`) + **JSON Schema** (`schema/`, Draft 2020-12): the
   response envelope, the dictionaries of tree-/attr-/meta-/selection-ops, the node shape.
+- **Conformance coverage for the `attrDelete` apply path** (delete an existing key, no-op on a
+  missing key, no-op on a missing layer, mixed set+delete batch). The branch was previously
+  uncovered: zeroing it out left the entire suite green, while `attrDelete` is a live op in the
+  production adapter (effect removal, mask deletion). Field-reported by the Photoshop adopter.
 - **Cross-language hash contract:** `tests/hash_vectors.json` (toy) + `tests/hash_vectors_realworld.json`
   (real PS trees up to 242 nodes, hashes from the production JS adapter). Parity is checked by a **live
   second implementation** — `js/canonical_hash.js` + `js/check_vectors.js` (Node), not Python-against-itself.
@@ -24,6 +28,13 @@ server, validated by the conformance suite) + an adapter contract + a reference 
 - **Toy adapter** (`adapters/in_memory.py`) + **end-to-end demo** (`demo.py`) + **a guide to implementing
   an adapter for Photoshop/UXP** (`adapters/photoshop.md`).
 - **CI:** conformance + schema on Python 3.10–3.12 + a cross-language hash job (Node).
+
+### Changed
+- The meta/selection channel dispatchers now **reject unknown ops** instead of skipping them
+  silently, and validate the **whole batch before applying any op** (all-or-nothing, per
+  wire-protocol §9). A silently skipped op — or a partially applied batch — is a silently stale
+  mirror on channels the integrity hash does not cover. The per-channel reaction to unknown ops is
+  now normative in `wire-protocol.md` §6. Field-reported by the Photoshop adopter.
 
 ### Known limitations
 Roadmap of the unfinished — `open-problems.md`: mutation batching, safe-wait /
