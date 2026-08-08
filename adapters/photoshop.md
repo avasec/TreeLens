@@ -7,11 +7,12 @@ updated: 2026-08-08
 # TreeLens — an adapter for Photoshop (UXP): a practical guide
 
 The TreeLens kernel (`treelens/`) is host-agnostic. To stand up a mirror over Photoshop, you implement
-**`HostAdapter`** (`treelens/adapter.py`) against the UXP API. This guide is a distillation of how the **production Photoshop MCP server** does it — the system the
-pattern was extracted from, which now **runs on the vendored kernel itself** (a shipped `HostAdapter` +
-a lens subclass, battle-tested against live Photoshop): what is thin on the PS side and where the
-pitfalls are. The normative seam contract — [wire-protocol](../wire-protocol.md);
-the portability axes — [portability](../docs/portability.md).
+**`HostAdapter`** (`treelens/adapter.py`) against the UXP API. This guide is a distillation of how the
+**production Photoshop MCP server** does it — the system the pattern was extracted from, which now
+**runs on the vendored kernel itself** (a shipped `HostAdapter` + a lens subclass, battle-tested
+against live Photoshop): what is thin on the PS side and where the pitfalls are. The normative seam
+contract — [wire-protocol](../wire-protocol.md); the portability axes —
+[portability](../docs/portability.md).
 
 > **Why this guide exists.** There is no public reference PS adapter in the repo (this is an honest
 > open-problem — [open-problems](../docs/open-problems.md) §8: the production system is private). The guide +
