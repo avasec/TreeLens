@@ -36,6 +36,12 @@ server, validated by the conformance suite) + an adapter contract + a reference 
   mirror on channels the integrity hash does not cover. The per-channel reaction to unknown ops is
   now normative in `wire-protocol.md` §6. Field-reported by the Photoshop adopter.
 
+### Fixed
+- `wire-protocol.md` prose caught up with the kernel and schema (which already agreed): §8 —
+  `driftRecovered` is set by a failed incremental apply as well as by a hash mismatch; §9 — the strip
+  list now names everything the kernel actually removes from the envelope (`attrChanges` /
+  `metaChanges` / `selectionChanges` wholesale, not just the bootstrap payload). Prose-only.
+
 ### Known limitations
 Roadmap of the unfinished — `open-problems.md`: mutation batching, safe-wait /
 serialization of concurrent commands, diff localization (Merkle/LIS), per-layer attr hashes. The kernel

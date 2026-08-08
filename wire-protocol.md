@@ -1,7 +1,7 @@
 ---
 type: reference
 subtype: architecture
-updated: 2026-06-02
+updated: 2026-08-08
 ---
 
 # TreeLens — wire protocol (normative)
@@ -200,8 +200,10 @@ adapter the same way — run its `canonical_hash` against these vectors.
 
 1. **Bootstrap.** If the scope is not yet in the mirror but an incremental delta arrives (or `treeAfter`) —
    the kernel pulls the full tree via `adapter.read_tree(scope)` (+ `read_attrs`) and seeds the mirror.
-2. **Hash-mismatch.** After applying the delta the kernel checks `treeHash`. No match → `adapter.read_tree`
-   → wholesale rebuild; the response is flagged `driftRecovered: true`.
+2. **Hash-mismatch or a failed incremental apply.** After applying the delta the kernel checks
+   `treeHash`; no match → `adapter.read_tree` → wholesale rebuild. An incremental delta that fails to
+   apply (malformed, internally inconsistent) triggers the same wholesale recovery instead of crashing
+   ingest — the host is authoritative. Either way the response is flagged `driftRecovered: true`.
 3. **Push-listener (external edit).** If the adapter called `on_external_change(scope)` (the user edited
    the host outside the agent's commands), the kernel on the **next** command does a full rebuild instead of an
    increment; the response is flagged `resyncedExternalEdit: true`. The adapter **SHOULD** not notify about its own
@@ -215,8 +217,9 @@ adapter the same way — run its `canonical_hash` against these vectors.
 - Stamps `stateVersion` — **an opaque, monotonically increasing per-scope token for correlating
   responses**, NOT a change counter: one command may bump the version by several (a rebuild hits
   tree+attrs+meta+selection). Do not build logic on its absolute value or delta.
-- **Strips the heavy payload** (`tree` in the rebuild op, bootstrap `attrChanges`, `treeAfter`) before
-  returning to the model — the mirror has already absorbed it; the model navigates with query-tools.
+- **Strips the absorbed payload** (`tree` in the rebuild op, `treeAfter`, and the `attrChanges` /
+  `metaChanges` / `selectionChanges` arrays wholesale) before returning to the model — the mirror has
+  already absorbed it; the model navigates with query-tools.
 
 ## 10. Stage-1 limitation
 
