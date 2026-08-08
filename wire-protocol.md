@@ -206,8 +206,10 @@ adapter the same way — run its `canonical_hash` against these vectors.
    ingest — the host is authoritative. Either way the response is flagged `driftRecovered: true`.
 3. **Push-listener (external edit).** If the adapter called `on_external_change(scope)` (the user edited
    the host outside the agent's commands), the kernel on the **next** command does a full rebuild instead of an
-   increment; the response is flagged `resyncedExternalEdit: true`. The adapter **SHOULD** not notify about its own
-   plugin mutations (then any event = a user edit).
+   increment; the response is flagged `resyncedExternalEdit: true`. The command's own `metaChanges` /
+   `selectionChanges` are still applied on top of the rebuild: recovery reseeds tree+attrs only, so for
+   the unhashed channels the envelope is the only source of truth. The adapter **SHOULD** not notify about
+   its own plugin mutations (then any event = a user edit).
 
 ## 9. What the kernel does with the envelope
 

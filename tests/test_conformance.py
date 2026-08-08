@@ -230,6 +230,49 @@ def test_unknown_meta_or_selection_op_is_rejected():
     assert lens.mirror.get_selection(SCOPE) is None
 
 
+class _PushHost(HostAdapter):
+    """Adapter with a push signal (`on_external_change` — F in the ABC)."""
+
+    def __init__(self):
+        self._cb = None
+        self._tree = {"id": None, "type": "ROOT",
+                      "children": [{"id": 1, "type": "PIXEL", "children": []}]}
+
+    def read_tree(self, scope_id):
+        import copy
+        return copy.deepcopy(self._tree)
+
+    def on_external_change(self, cb):
+        self._cb = cb
+
+    def push(self, scope):
+        self._cb(scope)
+
+
+def test_external_resync_still_applies_meta_and_selection():
+    """A command landing on a push-dirtied scope is superseded by a full rebuild
+    — but the rebuild reseeds tree+attrs ONLY (the ABC has no meta/selection
+    reads), so the command's own metaChanges/selectionChanges are the freshest
+    truth for those channels and must still be applied (wire-protocol §8.3).
+    Dropping them leaves quietly-stale meta on an unhashed channel; returning
+    them unstripped leaks the payload past the §9 strip."""
+    host = _PushHost()
+    lens = TreeLens(host)
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "metaChanges": [{"op": "metaRebuild", "meta": {"width": 100}}],
+                 "selectionChanges": [{"op": "selectionSet", "selection": [1]}]})
+
+    host.push(SCOPE)  # the user edited the host outside the agent
+    env = lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                       "metaChanges": [{"op": "metaRebuild", "meta": {"width": 999}}],
+                       "selectionChanges": [{"op": "selectionSet", "selection": [2]}]})
+    assert env.get("resyncedExternalEdit") is True
+    assert lens.mirror.get_meta(SCOPE) == {"width": 999}, "meta lost on the resync path"
+    assert lens.mirror.get_selection(SCOPE) == [2], "selection lost on the resync path"
+    assert "metaChanges" not in env and "selectionChanges" not in env, \
+        "payload leaked past the strip on the resync path"
+
+
 class _FullStateHost(HostAdapter):
     """Adapter that ships full post-state via `treeAfter` (returns_full_state)."""
 

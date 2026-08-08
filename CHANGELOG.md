@@ -40,6 +40,12 @@ server, validated by the conformance suite) + an adapter contract + a reference 
   now normative in `wire-protocol.md` §6. Field-reported by the Photoshop adopter.
 
 ### Fixed
+- The push-resync path (`resyncedExternalEdit`) **dropped the command's own `metaChanges` /
+  `selectionChanges`** instead of applying them — and returned them unstripped. The wholesale rebuild
+  reseeds tree+attrs only, so for the unhashed channels the envelope is the only source of truth:
+  dropping it left quietly-stale meta/selection with a version counter that says fresh. Both channels
+  now apply on the resync path too (normative in `wire-protocol.md` §8.3); found while auditing the
+  kernel against the adoption-guidance table.
 - `wire-protocol.md` prose caught up with the kernel and schema (which already agreed): §8 —
   `driftRecovered` is set by a failed incremental apply as well as by a hash mismatch; §9 — the strip
   list now names everything the kernel actually removes from the envelope (`attrChanges` /

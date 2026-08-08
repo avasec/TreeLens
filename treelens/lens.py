@@ -60,6 +60,11 @@ class TreeLens:
         if scope is not None and scope in self._dirty:
             self._force_rebuild(scope)
             self._dirty.discard(scope)
+            # The rebuild reseeds tree+attrs only (the ABC has no meta/selection
+            # reads) — for those channels the command's own envelope is the only
+            # source of truth, so they are applied on top, not superseded.
+            self._apply_meta_channel(scope, env)
+            self._apply_selection_channel(scope, env)
             self._strip(env)
             env["stateVersion"] = self.mirror.version(scope)
             env["resyncedExternalEdit"] = True
@@ -112,43 +117,54 @@ class TreeLens:
             env["stateVersion"] = self.mirror.version(scope)
             env.pop("attrChanges", None)
 
-        # meta channel (wholesale)
-        meta_changes = env.get("metaChanges")
-        if scope is not None and meta_changes is not None:
-            # Unknown ops are rejected, matching the op-vocabulary strictness of
-            # Mirror's tree/attr dispatchers (at the ingest level the tree channel
-            # instead recovers via rebuild + driftRecovered — see above; meta and
-            # selection have no hash to catch drift, so an error is the only
-            # honest signal). Validation runs over the WHOLE batch before any op
-            # is applied: a partially applied batch on an unhashed channel is
-            # exactly the quietly-stale mirror this check exists to prevent
-            # (wire-protocol.md §9 — atomic apply).
-            for op in meta_changes:
-                if op.get("op") != "metaRebuild":
-                    raise ValueError(f"ingest: unknown meta op {op.get('op')!r}")
-            for op in meta_changes:
-                self.mirror.set_meta(scope, op["meta"])
-            env["stateVersion"] = self.mirror.version(scope)
-            env.pop("metaChanges", None)
-
-        # selection channel (wholesale)
-        selection_changes = env.get("selectionChanges")
-        if scope is not None and selection_changes is not None:
-            # Same contract as the meta channel: reject unknown ops, and validate
-            # the whole batch before applying any of it (all-or-nothing).
-            for op in selection_changes:
-                if op.get("op") != "selectionSet":
-                    raise ValueError(
-                        f"ingest: unknown selection op {op.get('op')!r}"
-                    )
-            for op in selection_changes:
-                self.mirror.set_selection(scope, op["selection"])
-            env["stateVersion"] = self.mirror.version(scope)
-            env.pop("selectionChanges", None)
+        # meta / selection channels (wholesale)
+        if scope is not None:
+            self._apply_meta_channel(scope, env)
+            self._apply_selection_channel(scope, env)
 
         return env
 
     # ── internals ──────────────────────────────────────────────────────────────
+    def _apply_meta_channel(self, scope, env: dict) -> None:
+        """Apply + consume `metaChanges`. Runs on BOTH ingest paths (normal and
+        push-resync): recovery cannot reseed meta (no read in the ABC), so the
+        envelope is the only source of truth for this channel.
+
+        Unknown ops are rejected, matching the op-vocabulary strictness of
+        Mirror's tree/attr dispatchers (at the ingest level the tree channel
+        instead recovers via rebuild + driftRecovered; meta and selection have
+        no hash to catch drift, so an error is the only honest signal).
+        Validation runs over the WHOLE batch before any op is applied: a
+        partially applied batch on an unhashed channel is exactly the
+        quietly-stale mirror this check exists to prevent (wire-protocol.md §9
+        — atomic apply)."""
+        meta_changes = env.get("metaChanges")
+        if meta_changes is None:
+            return
+        for op in meta_changes:
+            if op.get("op") != "metaRebuild":
+                raise ValueError(f"ingest: unknown meta op {op.get('op')!r}")
+        for op in meta_changes:
+            self.mirror.set_meta(scope, op["meta"])
+        env["stateVersion"] = self.mirror.version(scope)
+        env.pop("metaChanges", None)
+
+    def _apply_selection_channel(self, scope, env: dict) -> None:
+        """Same contract as the meta channel: reject unknown ops, validate the
+        whole batch before applying any of it (all-or-nothing)."""
+        selection_changes = env.get("selectionChanges")
+        if selection_changes is None:
+            return
+        for op in selection_changes:
+            if op.get("op") != "selectionSet":
+                raise ValueError(
+                    f"ingest: unknown selection op {op.get('op')!r}"
+                )
+        for op in selection_changes:
+            self.mirror.set_selection(scope, op["selection"])
+        env["stateVersion"] = self.mirror.version(scope)
+        env.pop("selectionChanges", None)
+
     def _mark_dirty(self, scope_id) -> None:
         self._dirty.add(scope_id)
 
