@@ -136,6 +136,20 @@ and non-empty `children`; there is no separate `addGroup` op.
 
 Small flat states — replaced in full, without a granular diff.
 
+**Unknown ops (normative, per channel).** The kernel's reaction to an op outside the dictionary is
+channel-specific, because the safety nets differ:
+
+- **tree** — at the `Mirror` level an unknown op raises; at the **ingest** level that error is caught
+  and the kernel recovers wholesale (rebuild + `driftRecovered`, §8) — the tree has an integrity hash
+  and a recovery path, so self-healing is honest.
+- **attr / meta / selection** — an unknown op is **rejected with an error** that propagates out of
+  ingest. These channels are not covered by the integrity hash: silently skipping an op (or recovering
+  only part of a batch) would leave the mirror quietly stale with no signal — so an error is the only
+  honest reaction.
+- **Atomicity:** a meta/selection batch is validated in full **before** any op is applied —
+  all-or-nothing (§9). Tree and attr batches get the same guarantee from `Mirror`'s atomic apply
+  with rollback.
+
 ## 7. Integrity-hash contract
 
 `treeHash = sha256_hex( canonicalSerialize(tree) )`. The adapter, on the host side, **MUST** compute

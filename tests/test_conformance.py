@@ -181,6 +181,28 @@ def test_attr_delete_removes_the_field_and_tolerates_misses():
     assert m.get_attrs(SCOPE, 1) == {"opacity": 50}
 
 
+def test_unknown_op_in_mixed_batch_applies_nothing():
+    """A batch [valid, bogus] must be all-or-nothing (wire-protocol §9): the
+    valid op must NOT be applied — and the version must not move — before the
+    bogus one is rejected. A partially applied batch on an unhashed channel is
+    exactly the quietly-stale mirror the unknown-op rejection exists to prevent."""
+    lens = TreeLens(_FullStateHost())
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "metaChanges": [{"op": "metaRebuild", "meta": {"width": 10}}]})
+    version_before = lens.mirror.version(SCOPE)
+    try:
+        lens.ingest({"status": "SUCCESS", "scopeId": SCOPE, "metaChanges": [
+            {"op": "metaRebuild", "meta": {"width": 99}},   # valid — must not land
+            {"op": "metaSet", "meta": {"width": 7}},         # bogus — rejects the batch
+        ]})
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("mixed batch with a bogus op was accepted")
+    assert lens.mirror.get_meta(SCOPE) == {"width": 10}, "valid op leaked from a rejected batch"
+    assert lens.mirror.version(SCOPE) == version_before, "version moved on a rejected batch"
+
+
 def test_unknown_meta_or_selection_op_is_rejected():
     """Every channel fails loudly on an op it does not know.
 

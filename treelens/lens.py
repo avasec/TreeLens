@@ -115,14 +115,18 @@ class TreeLens:
         # meta channel (wholesale)
         meta_changes = env.get("metaChanges")
         if scope is not None and meta_changes is not None:
+            # Unknown ops are rejected, matching the op-vocabulary strictness of
+            # Mirror's tree/attr dispatchers (at the ingest level the tree channel
+            # instead recovers via rebuild + driftRecovered — see above; meta and
+            # selection have no hash to catch drift, so an error is the only
+            # honest signal). Validation runs over the WHOLE batch before any op
+            # is applied: a partially applied batch on an unhashed channel is
+            # exactly the quietly-stale mirror this check exists to prevent
+            # (wire-protocol.md §9 — atomic apply).
             for op in meta_changes:
-                # Unknown ops raise, symmetrically with the tree and attr
-                # dispatchers (Mirror._apply_tree_op / _apply_attr_op): silently
-                # skipping one leaves the mirror quietly stale — a state the
-                # integrity hash cannot catch, because meta and selection are not
-                # hashed.
                 if op.get("op") != "metaRebuild":
                     raise ValueError(f"ingest: unknown meta op {op.get('op')!r}")
+            for op in meta_changes:
                 self.mirror.set_meta(scope, op["meta"])
             env["stateVersion"] = self.mirror.version(scope)
             env.pop("metaChanges", None)
@@ -130,11 +134,14 @@ class TreeLens:
         # selection channel (wholesale)
         selection_changes = env.get("selectionChanges")
         if scope is not None and selection_changes is not None:
+            # Same contract as the meta channel: reject unknown ops, and validate
+            # the whole batch before applying any of it (all-or-nothing).
             for op in selection_changes:
                 if op.get("op") != "selectionSet":
                     raise ValueError(
                         f"ingest: unknown selection op {op.get('op')!r}"
                     )
+            for op in selection_changes:
                 self.mirror.set_selection(scope, op["selection"])
             env["stateVersion"] = self.mirror.version(scope)
             env.pop("selectionChanges", None)

@@ -30,9 +30,11 @@ server, validated by the conformance suite) + an adapter contract + a reference 
 - **CI:** conformance + schema on Python 3.10–3.12 + a cross-language hash job (Node).
 
 ### Changed
-- The meta/selection channel dispatchers now **reject unknown ops** (raise, matching the tree/attr
-  dispatchers) instead of skipping them silently. A silently skipped op is a silently stale mirror —
-  the exact failure class the kernel exists to kill. Field-reported by the Photoshop adopter.
+- The meta/selection channel dispatchers now **reject unknown ops** instead of skipping them
+  silently, and validate the **whole batch before applying any op** (all-or-nothing, per
+  wire-protocol §9). A silently skipped op — or a partially applied batch — is a silently stale
+  mirror on channels the integrity hash does not cover. The per-channel reaction to unknown ops is
+  now normative in `wire-protocol.md` §6. Field-reported by the Photoshop adopter.
 
 ### Known limitations
 Roadmap of the unfinished — `open-problems.md`: mutation batching, safe-wait /
