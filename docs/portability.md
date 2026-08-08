@@ -57,8 +57,8 @@ adopter chooses one of two honest paths:
   conform** to the normative contract. That is integration work, not a drop-in.
 
 What path (b) actually imposes — every row below is a real collision from the first adopter
-(avasec/ps-mcp — the origin system the kernel was extracted from; even its "native" envelope
-collided in three places):
+(the production Photoshop MCP server the kernel was extracted from; even its "native" envelope
+collided on all three host-emit rows — scope key, op dictionary, root sentinel):
 
 | Surface | Normative requirement | What non-conformance looks like |
 |---|---|---|

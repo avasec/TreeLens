@@ -28,6 +28,9 @@ server, validated by the conformance suite) + an adapter contract + a reference 
 - **Toy adapter** (`adapters/in_memory.py`) + **end-to-end demo** (`demo.py`) + **a guide to implementing
   an adapter for Photoshop/UXP** (`adapters/photoshop.md`).
 - **CI:** conformance + schema on Python 3.10–3.12 + a cross-language hash job (Node).
+- **Adoption guidance** (`docs/portability.md` "Adopting the kernel: conform or reimplement"): the two
+  honest adoption paths and the exact conformance surface path (b) imposes on the host emit, with the
+  field-observed failure mode for each non-conformance. Distilled from the first adopter.
 
 ### Changed
 - The meta/selection channel dispatchers now **reject unknown ops** instead of skipping them
