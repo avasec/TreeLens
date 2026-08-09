@@ -232,10 +232,11 @@ it is caught by the `treeHash` mismatch → rebuild. A deliberate gap; closing i
 
 ## 11. Scope lifecycle (eviction)
 
-A scope enters the mirror by being read (§8.1) and leaves it only when the **host side is gone** —
+A scope enters the mirror by being read (§8, item 1) and leaves it only when the **host side is gone** —
 a closed document, an unloaded scene. There is no wire-op for that: the envelope describes changes
 *within* a live scope, and a host that has closed a document has nothing left to send about it. The
-end of a scope is therefore an **adapter-side call**, `Mirror.forget(scope)`, made by whoever learns
+end of a scope is therefore an **adapter-side call**, `TreeLens.forget(scope)` (its mirror-level
+half, `Mirror.forget`, is internal), made by whoever learns
 of the close (the tool that issued it, or the adapter's own listener for a user-initiated one).
 
 - **Eviction, not invalidation.** Every sub-store of the scope is dropped — tree, attrs, meta,
@@ -246,11 +247,12 @@ of the close (the tool that issued it, or the adapter's own listener for a user-
   document it named sends a re-handed id through the external-edit resync path instead of a
   bootstrap; a dead scope left active is what every scope-defaulting query resolves to. The active
   scope is cleared only when it was this one, and **no successor is inferred** — which scope becomes
-  active after a close is the host's answer, so the adapter that learns it sets it (§8.1).
+  active after a close is the host's answer — it reaches the kernel by ingesting the successor
+  scope's next envelope (there is no public active-scope setter).
 - **Idempotent.** `forget` on an unknown scope returns `False` rather than raising — a close can
   legitimately reach the adapter through more than one path.
 - **A re-seen id is a new scope.** Hosts may hand the same id back later; the next delta bootstraps
-  it from a fresh read (§8.1) and its `stateVersion` restarts (§9).
+  it from a fresh read (§8, item 1) and its `stateVersion` restarts (§9).
 
 ## Links
 

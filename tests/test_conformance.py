@@ -570,6 +570,23 @@ def test_forget_leaves_no_scope_keyed_store_behind():
     assert _scope_keyed_stores(m, SCOPE) == [], "stores survived eviction"
 
 
+def test_forget_reports_known_even_when_a_stored_value_is_none():
+    """`forget` detects a scope by membership, not by the stored value.
+
+    Today every public mutator bumps the version store, so a pop-based
+    "known" check happens to work; the seed below plants a None payload
+    WITHOUT a version bump (the same future-mutator bug the store sweep
+    above guards against, simulated the same way — via the instance) so
+    this test fails on value-based detection rather than relying on that
+    side effect.
+    """
+    m = Mirror()
+    m._meta[SCOPE] = None  # deliberate: no _bump, see docstring
+
+    assert m.forget(SCOPE) is True, "a None-valued store must still count as known"
+    assert m.forget(SCOPE) is False, "second forget of the same scope must be a no-op"
+
+
 def test_lens_forget_evicts_lens_level_scope_state_too():
     """`TreeLens.forget` covers what the mirror cannot see: the push-dirty set
     and the active scope.

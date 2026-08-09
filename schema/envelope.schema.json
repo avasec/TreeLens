@@ -45,7 +45,7 @@
       "type": "string"
     },
     "stateVersion": {
-      "description": "Kernel-annotated: opaque monotonic per-scope correlation token (NOT a change counter).",
+      "description": "Kernel-annotated: opaque monotonic per-scope correlation token (NOT a change counter). Monotonic within a scope's lifetime (wire-protocol \u00a79/\u00a711): after eviction a re-handed scope id restarts its sequence.",
       "type": "integer"
     },
     "driftRecovered": {

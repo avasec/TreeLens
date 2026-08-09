@@ -65,7 +65,8 @@ class TreeLens:
         The active scope is cleared only if it WAS this one: closing a
         background scope must not blank the caller's idea of the foreground.
         Nothing here can name a successor — which scope becomes active after a
-        close is the host's decision, so the adapter that learns it sets it.
+        close is the host's decision — it reaches the kernel by ingesting the
+        successor scope's next envelope (there is no public active-scope setter).
 
         Returns:
             bool: whether the mirror held the scope (the lens-level state is

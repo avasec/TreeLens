@@ -76,7 +76,7 @@ class Mirror:
         the state describes something dead. The mirror is only useful while it
         is either correct or absent, so eviction removes the scope wholesale;
         a later incremental delta for the same id bootstraps from a fresh read
-        (wire-protocol.md §8.1) instead of extending a corpse.
+        (wire-protocol.md §8, item 1) instead of extending a corpse.
 
         Idempotent and never raises on an unknown scope: eviction is naturally
         re-entrant (a host can report the same close through more than one
@@ -88,9 +88,12 @@ class Mirror:
         dead scope; instead a re-seen scope starts a fresh version lifecycle
         (wire-protocol.md §9).
         """
-        known = False
+        # Membership is checked before popping: a stored value may legitimately
+        # be None (a host can set an empty meta), and `pop(...) is not None`
+        # would misreport that scope as unknown.
+        known = any(scope in store for store in self._scope_stores())
         for store in self._scope_stores():
-            known = store.pop(scope, None) is not None or known
+            store.pop(scope, None)
         return known
 
     # ── tree ────────────────────────────────────────────────────────────────
