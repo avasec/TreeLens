@@ -12,7 +12,7 @@ key ordering differs between runtimes. It does NOT hold for the attrs store
 (an int-id-keyed map): JS sorts int keys lexicographically, Python numerically,
 so the byte streams diverge. That is why TreeLens cross-checks ONLY the tree
 hash and resyncs attrs wholesale on rebuild (see wire-protocol.md, and the
-per-layer-hash fix in ../../open-problems.md §4).
+per-layer-hash fix in ../docs/open-problems.md §4).
 """
 
 import hashlib
@@ -37,6 +37,6 @@ def tree_hash(tree: dict) -> str:
     """Root hash of a pure-structure tree. This is a depth-0 Merkle root: it
     answers only 'equal / not equal', so a mismatch forces a full rebuild.
     Localized (per-node Merkle) recovery is a documented next step — see
-    ../../open-problems.md §3.
+    ../docs/open-problems.md §3.
     """
     return sha256_hex(stable_serialize(tree))

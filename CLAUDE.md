@@ -25,11 +25,11 @@ this file is the operational summary for an agent.
 | Path | What |
 |---|---|
 | `treelens/` | The host-agnostic **kernel**. Zero runtime dependencies (stdlib only). |
-| `treelens/mirror.py` | Mirrored state (tree + attrs + meta + selection), atomic apply, query. |
+| `treelens/mirror.py` | Mirrored state (tree + attrs + meta + selection), atomic apply, query, scope eviction (`forget`). |
 | `treelens/diff.py` | Keyed reconciliation (`compute_tree_diff` / `compute_attr_diff`), pure. |
 | `treelens/hashing.py` | Integrity hash (`tree_hash` / `stable_serialize` / `sha256_hex`). |
 | `treelens/adapter.py` | The `HostAdapter` contract — the only host-specific seam. |
-| `treelens/lens.py` | `TreeLens`: envelope ingest, drift detect/recover, payload strip. |
+| `treelens/lens.py` | `TreeLens`: envelope ingest, drift detect/recover, payload strip, scope eviction (`forget`). |
 | `adapters/in_memory.py` | Toy fake host — runs the full flow without a real application. |
 | `adapters/photoshop.md` | Adapter implementation guide for Photoshop/UXP (prose). |
 | `wire-protocol.md` | Normative adapter↔kernel contract (prose). |
@@ -42,7 +42,7 @@ this file is the operational summary for an agent.
 ## Commands
 
 The kernel is zero-dep, but **a validating run requires the dev-extra** (`jsonschema`), otherwise
-the schema suite is **silently skipped**.
+the schema suite is **skipped** (a loud banner flags it, but the contract goes unvalidated).
 
 ```bash
 pip install -e ".[dev]"        # pytest + jsonschema; the kernel itself needs nothing

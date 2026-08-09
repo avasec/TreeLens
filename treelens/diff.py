@@ -7,7 +7,7 @@ host that can only return full state lets the kernel diff here. Both paths feed
 the same op vocabulary that `Mirror.apply_*_diff` consumes.
 
 OP VOCABULARY (also normative in ../wire-protocol.md)
-  tree:  {op:"add",        id, type, parentId, index, children?}
+  tree:  {op:"add",        id, type, parentId, index, children}
          {op:"remove",     id}
          {op:"move",       id, toParent, newIndex}
          {op:"typeChange", id, from, to}
@@ -23,7 +23,7 @@ remove(A)+add(D). The whole design rests on id stability within a session.
 STAGE-1 LIMITATION (deliberate, as in the origin production system): same-parent reorder (children
 reordered without a parent change) is NOT emitted here. It is caught by the
 `tree_hash` drift-check and recovered via rebuild. Closing it with an LIS-based
-reorder op is a documented next step — ../../open-problems.md §3 (A1).
+reorder op is a documented next step — ../docs/open-problems.md §3 (A1).
 """
 
 from typing import Any

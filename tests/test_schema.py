@@ -12,7 +12,7 @@ Two trust anchors for adapter authors:
 if the validator is absent this suite SKIPS (exit 0). CI installs `.[dev]` and
 runs it as a hard gate.
 
-    python tests/test_schema.py          (from reference/, or any cwd)
+    python tests/test_schema.py          (from the repo root, or any cwd)
     # or: pytest tests/
 """
 

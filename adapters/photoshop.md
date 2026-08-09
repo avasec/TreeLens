@@ -128,7 +128,8 @@ document meta and the selection) carries host-specific reads beyond the ABC and 
 lens subclass — otherwise a drift recovery leaves those channels stale at a fresh version. (Since the
 push-resync fix, the command's **own** `metaChanges`/`selectionChanges` are applied on top of the
 resync rebuild — the stale-channel hazard remains for host-side changes the command's envelope does
-not carry. Blessing these extension seams is an open question — issues #3/#4.)
+not carry. Blessing these extension seams is an open question — issue #4; its eviction half has
+since landed as `TreeLens.forget` (wire-protocol §11).)
 
 ## 4. `transaction(fn)` → `executeAsModal`
 

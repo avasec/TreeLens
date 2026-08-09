@@ -8,10 +8,10 @@ goes back to the model.
 
 Envelope shape (normative: ../wire-protocol.md):
     {status, response, scopeId,
-     treeChanges?, treeHash?, attrChanges?, metaChanges?, selectionChanges?,
-     message?}
-The kernel adds `stateVersion` (and `resyncedExternalEdit` when a push signal
-forced a rebuild).
+     treeChanges?, treeHash?, treeAfter?, attrChanges?, metaChanges?,
+     selectionChanges?, message?}
+The kernel adds `stateVersion` (plus `driftRecovered` / `resyncedExternalEdit`
+when recovery or a push signal forced a rebuild).
 """
 
 from typing import Any, Optional

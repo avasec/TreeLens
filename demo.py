@@ -1,7 +1,7 @@
 # MIT License — TreeLens reference demo.
 """End-to-end demo: run the treelens kernel against the toy in-memory host.
 
-    python demo.py        (from the reference/ directory)
+    python demo.py        (from the repo root, or any cwd)
 
 Shows the whole pattern with no real app installed:
   1. bootstrap + structural mutations (diff-as-response: thin envelopes)
@@ -14,7 +14,7 @@ Shows the whole pattern with no real app installed:
 import pathlib
 import sys
 
-# reference/ on the import path so `treelens` / `adapters` resolve from any cwd.
+# Repo root on the import path so `treelens` / `adapters` resolve from any cwd.
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from adapters.in_memory import InMemoryHost  # noqa: E402

@@ -6,7 +6,7 @@
 // drift across the host↔kernel seam. Run in CI alongside the Python suite so
 // the cross-language parity claim is actually enforced, not just asserted.
 //
-//   node js/check_vectors.js     (from the reference/ root)
+//   node js/check_vectors.js     (from the repo root)
 
 const fs = require("fs");
 const path = require("path");

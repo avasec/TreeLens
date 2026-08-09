@@ -101,7 +101,7 @@ root): the host-agnostic kernel + an abstract `HostAdapter` + a toy fake-host on
 | **[docs/portability.md](docs/portability.md)** | Host-agnostic **kernel** vs host-specific **adapter**; the adapter contract; mapping onto Photoshop / Figma / Unity; the three linchpin axes (id-stability, execution model, event model). |
 | **[docs/open-problems.md](docs/open-problems.md)** | An honest status of what is unfinished: **mutation batching**, **safe-wait / concurrency**, diff localization (Merkle), persistence, attrs cross-hash. Problem → current state → direction. |
 | **[wire-protocol.md](wire-protocol.md)** | The normative adapter↔kernel contract (prose) + machine-readable `schema/` (JSON Schema, Draft 2020-12). |
-| **`treelens/`** | The host-agnostic kernel: `mirror.py` (tree+attrs+meta+selection, atomic apply, query), `diff.py` (keyed reconciliation), `hashing.py` (integrity), `adapter.py` (the `HostAdapter` contract), `lens.py` (envelope ingest, drift detect/recover, payload strip). Zero runtime dependencies. |
+| **`treelens/`** | The host-agnostic kernel: `mirror.py` (tree+attrs+meta+selection, atomic apply, query, scope eviction), `diff.py` (keyed reconciliation), `hashing.py` (integrity), `adapter.py` (the `HostAdapter` contract), `lens.py` (envelope ingest, drift detect/recover, payload strip, `forget`). Zero runtime dependencies. |
 | **`adapters/`** | `in_memory.py` — a toy host (runs without a real application); `photoshop.md` — an adapter implementation guide for Photoshop/UXP. |
 
 ## Running

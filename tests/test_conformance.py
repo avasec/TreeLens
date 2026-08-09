@@ -5,7 +5,7 @@ This is the trust anchor for reuse: it exercises
 the kernel with NO host — pure diff sequences in, asserted query results + hash
 out — plus the full-state-fallback path and the cross-language hash vectors.
 
-    python tests/test_conformance.py      (from the reference/ directory, or any)
+    python tests/test_conformance.py      (from the repo root, or any cwd)
     # or: pytest tests/                    (functions are test_*-named)
 """
 
@@ -13,9 +13,9 @@ import json
 import pathlib
 import sys
 
-# Put reference/ on the import path so `treelens` resolves regardless of cwd /
+# Put the repo root on the import path so `treelens` resolves regardless of cwd /
 # whether we are run directly or collected by pytest (the script's own dir,
-# tests/, is what Python adds by default — not reference/).
+# tests/, is what Python adds by default — not the repo root).
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 from treelens import HostAdapter, TreeLens, Mirror, compute_tree_diff, tree_hash  # noqa: E402

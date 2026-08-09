@@ -213,14 +213,15 @@ the current implementation: **reorder within a single parent** (without a parent
 caught by the hash → forced rebuild (cured by the LIS technique, see [open-problems](open-problems.md)).
 
 > Grounding: compute on the adapter side ↔ apply in the kernel, matching by the node's stable id;
-> the contract — `.claude/rules/uxp-handlers.md`.
+> the contract — [wire-protocol](../wire-protocol.md) §4.
 
 ### 5. Integrity + drift recovery
 
 The adapter sends `treeHash` — sha256 over the **canonical serialization** of the tree. After applying
 the delta, the server cross-checks it against the mirror's local hash. Mismatch → **forced rebuild**: the
 server pulls the fresh tree via an internal structural read and **reseeds attrs+meta+selection** (any tree
-rebuild reseeds all sub-stores).
+rebuild reseeds all sub-stores — in the origin production system; the reference kernel's built-in recovery
+reseeds tree+attrs only, the ABC has no meta/selection reads — see [portability](portability.md)).
 
 **The hard part — cross-language determinism of serialization.** The hash is cross-checked between two
 implementations (host language ↔ server language), so the byte stream of the canonical serialization must

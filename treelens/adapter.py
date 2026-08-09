@@ -4,7 +4,7 @@
 This abstract base IS the core artifact of the pattern: implement it for your
 host (Photoshop / Figma / Unity / your app) and the kernel (store + diff + hash
 + query + drift recovery) works unchanged. The contract is described in prose in
-../../portability.md "Host-adapter contract"; this file is its executable form.
+../docs/portability.md "Host-adapter contract"; this file is its executable form.
 
 MANDATORY  : read_tree (B), canonical_hash (D, default provided),
              and a mutation path that yields response envelopes carrying diffs
