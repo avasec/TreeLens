@@ -32,7 +32,7 @@
     },
     {
       "title": "attrsRebuild",
-      "description": "Full replacement of the attr store. Keys are node ids (as strings in JSON objects).",
+      "description": "Full replacement of the attr store. Keys are node ids (as strings in JSON objects). MUST be the only op in its attrChanges array (wire-protocol §5) — the kernel rejects a mixed batch.",
       "type": "object",
       "additionalProperties": false,
       "required": ["op", "attributes"],

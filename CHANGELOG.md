@@ -55,6 +55,10 @@ server, validated by the conformance suite) + an adapter contract + a reference 
   now normative in `wire-protocol.md` §6. Field-reported by the Photoshop adopter.
 
 ### Fixed
+- The singleton rule for `attrsRebuild` — always enforced by the kernel — is now stated in
+  `wire-protocol.md` §5 and the attr-op schema description (mirroring tree `rebuild`, §4). The
+  conformance suite's own envelopes were brought schema-shape: object-valued `selection`, `children`
+  present on `add`.
 - The push-resync path (`resyncedExternalEdit`) **dropped the command's own `metaChanges` /
   `selectionChanges`** instead of applying them — and returned them unstripped. The wholesale rebuild
   reseeds tree+attrs only, so for the unhashed channels the envelope is the only source of truth:

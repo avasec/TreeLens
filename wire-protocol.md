@@ -123,6 +123,8 @@ and non-empty `children`; there is no separate `addGroup` op.
 
 - `attrChanges` arrives in **three forms**: scoped delta (attr-mutation, without treeChanges);
   structural-seed (alongside treeChanges, the attributes of new nodes); `attrsRebuild` (on rebuild events).
+- `attrsRebuild` — like tree `rebuild` (§4), **MUST be the only op in its array**; the kernel rejects a
+  mixed batch.
 - **The attrs hash is NOT cross-checked.** An external map keyed by int-id serializes differently across
   runtimes (the ordering of int keys) → the hashes diverge. Therefore attrs are resynced **wholesale** on
   rebuild, and scoped deltas are **trusted**. The fix (per-layer hashes) — [open-problems](docs/open-problems.md) §4.

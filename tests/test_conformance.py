@@ -260,15 +260,15 @@ def test_external_resync_still_applies_meta_and_selection():
     lens = TreeLens(host)
     lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
                  "metaChanges": [{"op": "metaRebuild", "meta": {"width": 100}}],
-                 "selectionChanges": [{"op": "selectionSet", "selection": [1]}]})
+                 "selectionChanges": [{"op": "selectionSet", "selection": {"nodeIds": [1]}}]})
 
     host.push(SCOPE)  # the user edited the host outside the agent
     env = lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
                        "metaChanges": [{"op": "metaRebuild", "meta": {"width": 999}}],
-                       "selectionChanges": [{"op": "selectionSet", "selection": [2]}]})
+                       "selectionChanges": [{"op": "selectionSet", "selection": {"nodeIds": [2]}}]})
     assert env.get("resyncedExternalEdit") is True
     assert lens.mirror.get_meta(SCOPE) == {"width": 999}, "meta lost on the resync path"
-    assert lens.mirror.get_selection(SCOPE) == [2], "selection lost on the resync path"
+    assert lens.mirror.get_selection(SCOPE) == {"nodeIds": [2]}, "selection lost on the resync path"
     assert "metaChanges" not in env and "selectionChanges" not in env, \
         "payload leaked past the strip on the resync path"
 
@@ -615,7 +615,7 @@ def test_lens_forget_evicts_lens_level_scope_state_too():
     # The next ingest for a re-handed id is a clean bootstrap, not a resync.
     env = lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
                        "treeChanges": [{"op": "add", "id": 9, "type": "PIXEL",
-                                        "parentId": None, "index": 0}]})
+                                        "parentId": None, "index": 0, "children": []}]})
     assert "resyncedExternalEdit" not in env, \
         "a re-seen id was reported as an external-edit resync"
     assert _struct(lens.mirror.get_tree(SCOPE)) == _struct(_root([_node(1, "PIXEL")])), \
@@ -663,7 +663,7 @@ def test_forget_then_incremental_delta_bootstraps_instead_of_failing():
 
     lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
                  "treeChanges": [{"op": "add", "id": 9, "type": "PIXEL", "parentId": None,
-                                  "index": 0}]})
+                                  "index": 0, "children": []}]})
     # _PushHost.read_tree returns a single node id=1 — proof the state came from
     # the host read, not from the pre-eviction mirror (id=7) or the delta (id=9).
     assert _struct(lens.mirror.get_tree(SCOPE)) == _struct(_root([_node(1, "PIXEL")])), \
