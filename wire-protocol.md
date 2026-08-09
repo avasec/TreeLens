@@ -219,7 +219,7 @@ adapter the same way — run its `canonical_hash` against these vectors.
 - Stamps `stateVersion` — **an opaque, monotonically increasing per-scope token for correlating
   responses**, NOT a change counter: one command may bump the version by several (a rebuild hits
   tree+attrs+meta+selection). Do not build logic on its absolute value or delta. Monotonicity holds
-  **within a scope's lifetime**: `Mirror.forget(scope)` (§11) ends that lifetime, so an id the host
+  **within a scope's lifetime**: `TreeLens.forget(scope)` (§11) ends that lifetime, so an id the host
   hands back later starts a fresh version sequence rather than continuing a dead scope's.
 - **Strips the absorbed payload** (`tree` in the rebuild op, `treeAfter`, and the `attrChanges` /
   `metaChanges` / `selectionChanges` arrays wholesale) before returning to the model — the mirror has
