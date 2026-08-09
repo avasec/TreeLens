@@ -45,6 +45,54 @@ class Mirror:
     def version(self, scope) -> int:
         return self._versions.get(scope, 0)
 
+    # ── scope lifecycle ─────────────────────────────────────────────────────
+    def _scope_stores(self) -> tuple[dict, ...]:
+        """Every per-scope store, listed in one place — what `forget` clears.
+
+        Enumerated here rather than open-coded at the call site so that adding a
+        sub-store is one line, not a store that silently survives eviction.
+        """
+        return (
+            self._trees,
+            self._index,
+            self._attrs,
+            self._meta,
+            self._selection,
+            self._versions,
+        )
+
+    def forget(self, scope) -> bool:
+        """Drop every trace of `scope` FROM THE MIRROR. True if it held any.
+
+        RESPONSIBILITY BOUNDARY: this covers the mirrored state and nothing
+        else. Scope-keyed state living a level up — the lens's push-dirty set,
+        its idea of the active scope — is `TreeLens.forget`'s job, and that is
+        the method callers should use; reaching for this one directly evicts
+        half of a scope.
+
+        Eviction, not invalidation: once a scope's host counterpart is gone (a
+        closed document, an unloaded scene), a mirror that still answers for it
+        is worse than one that never knew it — nothing downstream can tell that
+        the state describes something dead. The mirror is only useful while it
+        is either correct or absent, so eviction removes the scope wholesale;
+        a later incremental delta for the same id bootstraps from a fresh read
+        (wire-protocol.md §8.1) instead of extending a corpse.
+
+        Idempotent and never raises on an unknown scope: eviction is naturally
+        re-entrant (a host can report the same close through more than one
+        path), and a caller that has to guard every call is one that will
+        forget to.
+
+        The version counter goes with the rest. Keeping it would leave a store
+        that outlives eviction, so a re-seen id would inherit the lifetime of a
+        dead scope; instead a re-seen scope starts a fresh version lifecycle
+        (wire-protocol.md §9).
+        """
+        known = False
+        for store in self._scope_stores():
+            known = store.pop(scope, None) is not None or known
+        return known
+
     # ── tree ────────────────────────────────────────────────────────────────
     def get_tree(self, scope) -> Optional[dict]:
         return self._trees.get(scope)

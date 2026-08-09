@@ -44,6 +44,39 @@ class TreeLens:
     def path(self, node_id, scope=None):
         return self.mirror.path(scope or self._active_scope, node_id)
 
+    # ── scope lifecycle ───────────────────────────────────────────────────────
+    def forget(self, scope) -> bool:
+        """Evict `scope` everywhere — mirrored state AND this lens's own state.
+
+        THE ENTRY POINT for a scope whose host side is gone (wire-protocol.md
+        §11): callers use this, not `Mirror.forget`, because eviction spans two
+        levels and only this one covers both.
+
+        - `Mirror` owns the mirrored state (tree, attrs, meta, selection,
+          version) and evicts it itself.
+        - This lens owns two more scope-keyed things the mirror never sees: the
+          set of scopes a push signal marked stale, and which scope is active.
+          Left behind, the first would re-route a re-seen id straight into the
+          external-edit resync path — reporting `resyncedExternalEdit` on what
+          is really a fresh scope's bootstrap, and skipping the hash check that
+          bootstrap does; the second would name a dead scope as active, which is
+          what every scope-defaulting query falls back to.
+
+        The active scope is cleared only if it WAS this one: closing a
+        background scope must not blank the caller's idea of the foreground.
+        Nothing here can name a successor — which scope becomes active after a
+        close is the host's decision, so the adapter that learns it sets it.
+
+        Returns:
+            bool: whether the mirror held the scope (the lens-level state is
+            bookkeeping, so it does not make an unknown scope "known").
+        """
+        evicted = self.mirror.forget(scope)
+        self._dirty.discard(scope)
+        if self._active_scope == scope:
+            self._active_scope = None
+        return evicted
+
     # ── ingest ────────────────────────────────────────────────────────────────
     def ingest(self, env: dict) -> dict:
         """Apply a host response envelope to the mirror and return it thinned."""
