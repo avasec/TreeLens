@@ -218,7 +218,9 @@ adapter the same way — run its `canonical_hash` against these vectors.
 - Checks the hash, and where needed — recovery (§8).
 - Stamps `stateVersion` — **an opaque, monotonically increasing per-scope token for correlating
   responses**, NOT a change counter: one command may bump the version by several (a rebuild hits
-  tree+attrs+meta+selection). Do not build logic on its absolute value or delta.
+  tree+attrs+meta+selection). Do not build logic on its absolute value or delta. Monotonicity holds
+  **within a scope's lifetime**: `Mirror.forget(scope)` (§11) ends that lifetime, so an id the host
+  hands back later starts a fresh version sequence rather than continuing a dead scope's.
 - **Strips the absorbed payload** (`tree` in the rebuild op, `treeAfter`, and the `attrChanges` /
   `metaChanges` / `selectionChanges` arrays wholesale) before returning to the model — the mirror has
   already absorbed it; the model navigates with query-tools.
@@ -227,6 +229,30 @@ adapter the same way — run its `canonical_hash` against these vectors.
 
 **Same-parent reorder** (reordering children without changing parent) `compute_tree_diff` **does not emit** —
 it is caught by the `treeHash` mismatch → rebuild. A deliberate gap; closing it (LIS-reorder) — [open-problems](docs/open-problems.md) §3.
+
+## 11. Scope lifecycle (eviction)
+
+A scope enters the mirror by being read (§8, item 1) and leaves it only when the **host side is gone** —
+a closed document, an unloaded scene. There is no wire-op for that: the envelope describes changes
+*within* a live scope, and a host that has closed a document has nothing left to send about it. The
+end of a scope is therefore an **adapter-side call**, `TreeLens.forget(scope)` (its mirror-level
+half, `Mirror.forget`, is internal), made by whoever learns
+of the close (the tool that issued it, or the adapter's own listener for a user-initiated one).
+
+- **Eviction, not invalidation.** Every sub-store of the scope is dropped — tree, attrs, meta,
+  selection, and the version. A mirror that keeps answering for a dead scope is worse than one that
+  never knew it: the state reads as live and no consumer can tell otherwise.
+- **It spans both levels.** `TreeLens.forget` is the entry point: the mirrored state is only half of
+  it, the lens also holds the push-dirty set and the active scope. A dirty mark that outlives the
+  document it named sends a re-handed id through the external-edit resync path instead of a
+  bootstrap; a dead scope left active is what every scope-defaulting query resolves to. The active
+  scope is cleared only when it was this one, and **no successor is inferred** — which scope becomes
+  active after a close is the host's answer — it reaches the kernel by ingesting the successor
+  scope's next envelope (there is no public active-scope setter).
+- **Idempotent.** `forget` on an unknown scope returns `False` rather than raising — a close can
+  legitimately reach the adapter through more than one path.
+- **A re-seen id is a new scope.** Hosts may hand the same id back later; the next delta bootstraps
+  it from a fresh read (§8, item 1) and its `stateVersion` restarts (§9).
 
 ## Links
 

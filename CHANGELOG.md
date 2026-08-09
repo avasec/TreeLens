@@ -28,6 +28,21 @@ server, validated by the conformance suite) + an adapter contract + a reference 
 - **Toy adapter** (`adapters/in_memory.py`) + **end-to-end demo** (`demo.py`) + **a guide to implementing
   an adapter for Photoshop/UXP** (`adapters/photoshop.md`).
 - **CI:** conformance + schema on Python 3.10–3.12 + a cross-language hash job (Node).
+- **Scope eviction — `TreeLens.forget(scope)` / `Mirror.forget(scope)`** (+ `wire-protocol.md` §11):
+  drops every sub-store of a scope (tree, attrs, meta, selection, version) when the host side is gone
+  — a closed document, an unloaded scene. Eviction spans two levels, and `TreeLens.forget` is the
+  entry point: besides the mirrored state it clears the lens's own scope-keyed state — the push-dirty
+  set and the active scope (the latter only when it WAS this scope, so closing a background scope
+  does not blank the foreground). A dirty mark outliving the document it named would route a re-handed
+  id into the external-edit resync branch — `resyncedExternalEdit` reported on what is really a fresh
+  scope's bootstrap. Idempotent, returns whether the scope was known. There is no wire-op for a close:
+  an envelope describes changes *within* a live scope, so the end of one is an adapter-side call.
+  Without it a mirror keeps answering for a dead scope as if it were live — verified on the Photoshop
+  adopter's live stand: after a document was closed by its tab, the scope kept serving state with no
+  hint of death. Consequence for `stateVersion` (§9): monotonicity holds within a scope's lifetime,
+  and an id handed back by the host later starts a fresh sequence. Conformance: eviction of all
+  channels of one scope only, a store-completeness sweep (a sub-store added later and missed by
+  `forget` goes red), and post-eviction bootstrap of an incremental delta.
 - **Adoption guidance** (`docs/portability.md` "Adopting the kernel: conform or reimplement"): the two
   honest adoption paths and the exact conformance surface path (b) imposes on the host emit, with the
   field-observed failure mode for each non-conformance. Distilled from the first adopter.

@@ -491,6 +491,186 @@ def test_diff_realworld_roundtrip():
             assert m.hash(SCOPE) == b["sha256"], f"{label}: hash (JS-anchored)"
 
 
+def _seed_all_channels(mirror, scope, width):
+    """Populate all four sub-stores of `scope` — what eviction has to clear."""
+    mirror.rebuild(scope, _root([_node(1, "GROUP", [_node(2, "PIXEL")])]))
+    mirror.rebuild_attrs(scope, {1: {"name": "g"}, 2: {"name": "px"}})
+    mirror.set_meta(scope, {"width": width})
+    mirror.set_selection(scope, {"active": True, "bounds": [0, 0, width, width]})
+
+
+def test_forget_evicts_every_channel_of_one_scope_only():
+    """`forget(scope)` drops tree, attrs, meta, selection AND the version — and
+    touches no other scope.
+
+    Eviction exists because a mirror that keeps answering for a closed document
+    lies in the one way nothing downstream can catch: the state looks live. Each
+    channel is asserted separately because they are separate stores — clearing
+    the tree alone still leaves `get_meta` serving a dead document's header. The
+    second scope pins that eviction is scoped, not a disguised reset.
+    """
+    m = Mirror()
+    _seed_all_channels(m, SCOPE, 100)
+    _seed_all_channels(m, "other", 200)
+    version_before = m.version(SCOPE)
+    assert version_before > 0 and m.get_tree(SCOPE) is not None, "fixture did not seed"
+
+    assert m.forget(SCOPE) is True, "forget of a mirrored scope must report it was known"
+
+    assert m.get_tree(SCOPE) is None, "tree survived eviction"
+    assert m.has_attrs(SCOPE) is False, "attrs store survived eviction"
+    assert m.get_attrs(SCOPE, 1) is None, "attrs survived eviction"
+    assert m.get_meta(SCOPE) is None, "meta survived eviction"
+    assert m.get_selection(SCOPE) is None, "selection survived eviction"
+    assert m.version(SCOPE) == 0, "version survived eviction — a re-seen id would inherit it"
+    assert m.hash(SCOPE) == "", "hash still computed for an evicted scope"
+    assert m.subtree(SCOPE, 1) is None, "node index survived eviction"
+    assert m.path(SCOPE, 2) is None, "path resolved in an evicted scope"
+    assert m.query(SCOPE, ".*") == {"matches": [], "matchCount": 0, "truncated": False}
+
+    # The neighbour is untouched — including its version counter.
+    assert _struct(m.get_tree("other")) == _struct(
+        _root([_node(1, "GROUP", [_node(2, "PIXEL")])])
+    ), "eviction of one scope damaged another"
+    assert m.get_attrs("other", 2) == {"name": "px"}
+    assert m.get_meta("other") == {"width": 200}
+    assert m.get_selection("other") == {"active": True, "bounds": [0, 0, 200, 200]}
+    assert m.version("other") == version_before, "neighbour's version moved"
+
+    assert m.forget(SCOPE) is False, "forget of an unknown scope must report False"
+    assert m.forget("never-seen") is False, "forget must not raise on an unknown scope"
+
+
+def _scope_keyed_stores(obj, scope):
+    """Names of `obj`'s containers that still key `scope`.
+
+    Both dicts and sets: the lens's push-dirty state is a SET, so a dict-only
+    sweep would miss exactly the shape that leaks (a set of scopes waiting for
+    a rebuild).
+    """
+    return [name for name, store in vars(obj).items()
+            if isinstance(store, (dict, set)) and scope in store]
+
+
+def test_forget_leaves_no_scope_keyed_store_behind():
+    """No per-scope store outlives `forget` — including one added later.
+
+    The behavioural test above can only check the channels that exist today; a
+    sub-store added tomorrow and missed in `_scope_stores` would keep answering
+    for a dead scope with the whole suite green. This sweeps the instance
+    instead, so that bug goes red here.
+    """
+    m = Mirror()
+    _seed_all_channels(m, SCOPE, 100)
+    populated = _scope_keyed_stores(m, SCOPE)
+    assert len(populated) >= 6, f"fixture seeded too few stores: {populated}"
+
+    m.forget(SCOPE)
+
+    assert _scope_keyed_stores(m, SCOPE) == [], "stores survived eviction"
+
+
+def test_forget_reports_known_even_when_a_stored_value_is_none():
+    """`forget` detects a scope by membership, not by the stored value.
+
+    Today every public mutator bumps the version store, so a pop-based
+    "known" check happens to work; the seed below plants a None payload
+    WITHOUT a version bump (the same future-mutator bug the store sweep
+    above guards against, simulated the same way — via the instance) so
+    this test fails on value-based detection rather than relying on that
+    side effect.
+    """
+    m = Mirror()
+    m._meta[SCOPE] = None  # deliberate: no _bump, see docstring
+
+    assert m.forget(SCOPE) is True, "a None-valued store must still count as known"
+    assert m.forget(SCOPE) is False, "second forget of the same scope must be a no-op"
+
+
+def test_lens_forget_evicts_lens_level_scope_state_too():
+    """`TreeLens.forget` covers what the mirror cannot see: the push-dirty set
+    and the active scope.
+
+    A scope id left in the dirty set outlives the document it named. Hosts hand
+    ids back, and the next one to be handed this id would ingest through the
+    external-edit resync branch — reported as `resyncedExternalEdit` when it is
+    really a fresh scope's bootstrap, and skipping the hash check bootstrap
+    does. A dead scope left as active is worse still: it is the fallback every
+    scope-defaulting query resolves to.
+    """
+    host = _PushHost()
+    lens = TreeLens(host)
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "treeChanges": [{"op": "rebuild", "tree": _root([_node(7, "PIXEL")])}]})
+    host.push(SCOPE)  # the user edited outside the agent — scope is now dirty
+    assert lens.active_scope == SCOPE and SCOPE in lens._dirty, "fixture did not seed"
+
+    assert lens.forget(SCOPE) is True, "lens.forget must report the mirror held the scope"
+
+    assert lens.mirror.get_tree(SCOPE) is None, "lens.forget did not evict the mirror"
+    assert SCOPE not in lens._dirty, "dirty mark outlived the scope it named"
+    assert lens.active_scope is None, "a dead scope is still the active one"
+    assert _scope_keyed_stores(lens, SCOPE) == [], "lens-level state survived eviction"
+
+    # The next ingest for a re-handed id is a clean bootstrap, not a resync.
+    env = lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                       "treeChanges": [{"op": "add", "id": 9, "type": "PIXEL",
+                                        "parentId": None, "index": 0}]})
+    assert "resyncedExternalEdit" not in env, \
+        "a re-seen id was reported as an external-edit resync"
+    assert _struct(lens.mirror.get_tree(SCOPE)) == _struct(_root([_node(1, "PIXEL")])), \
+        "post-eviction delta did not bootstrap from the host"
+
+    assert lens.forget("never-seen") is False, "forget of an unknown scope must not raise"
+
+
+def test_lens_forget_keeps_a_foreground_scope_active():
+    """Evicting a background scope must not blank the active one.
+
+    Closing a document the caller was not looking at is routine; if it cleared
+    the active scope anyway, every scope-defaulting query would start answering
+    for nothing until something re-set it.
+    """
+    lens = TreeLens(_PushHost())
+    lens.ingest({"status": "SUCCESS", "scopeId": "background",
+                 "treeChanges": [{"op": "rebuild", "tree": _root([])}]})
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "treeChanges": [{"op": "rebuild", "tree": _root([_node(7, "PIXEL")])}]})
+    assert lens.active_scope == SCOPE
+
+    lens.forget("background")
+
+    assert lens.active_scope == SCOPE, "evicting a background scope blanked the active one"
+    assert lens.mirror.get_tree(SCOPE) is not None, "the active scope's mirror was damaged"
+
+
+def test_forget_then_incremental_delta_bootstraps_instead_of_failing():
+    """After eviction an incremental delta for the same id rebuilds from the
+    host (§8.1) rather than extending a corpse or crashing ingest.
+
+    This is the production close-then-reopen path: the mirror forgets a closed
+    document, the host later hands the id back, and the first delta must land on
+    freshly read state. Asserted through the mirror's contents (the host tree),
+    not just "no exception".
+    """
+    host = _PushHost()
+    lens = TreeLens(host)
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "treeChanges": [{"op": "rebuild", "tree": _root([_node(7, "PIXEL")])}]})
+    assert lens.mirror.get_tree(SCOPE) is not None
+
+    assert lens.mirror.forget(SCOPE) is True
+
+    lens.ingest({"status": "SUCCESS", "scopeId": SCOPE,
+                 "treeChanges": [{"op": "add", "id": 9, "type": "PIXEL", "parentId": None,
+                                  "index": 0}]})
+    # _PushHost.read_tree returns a single node id=1 — proof the state came from
+    # the host read, not from the pre-eviction mirror (id=7) or the delta (id=9).
+    assert _struct(lens.mirror.get_tree(SCOPE)) == _struct(_root([_node(1, "PIXEL")])), \
+        "post-eviction delta did not bootstrap from the host"
+    assert lens.mirror.version(SCOPE) > 0, "bootstrapped scope has no version"
+
+
 def _run():
     tests = [v for k, v in sorted(globals().items())
              if k.startswith("test_") and callable(v)]
